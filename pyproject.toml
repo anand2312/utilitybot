@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "utilitybot"
+version = "0.1.0"
+description = "A Discord slash command based utility bot."
+authors = ["Anand Krishna <anandkrishna2312@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+"discord.py" = "^1.7.2"
+discord-py-slash-command = "^1.1.2"
+loguru = "^0.5.3"
+jishaku = "^1.20.0"
+
+[tool.poetry.dev-dependencies]
+python-dotenv = "^0.17.1"
+black = "^21.4b2"
+pre-commit = "^2.12.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
