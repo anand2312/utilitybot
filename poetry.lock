@@ -289,7 +289,7 @@ virtualenv = ">=20.0.8"
 name = "python-dotenv"
 version = "0.17.1"
 description = "Read key-value pairs from a .env file and set them as environment variables"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -380,7 +380,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "38bb490d77c921aa03f118b9ebbfc637e47358755b2ae3d16225b6d8422ea2ca"
+content-hash = "c5ceff44bd7399fdd932c4fa8988e1fdffbdcf8b8c70c82482859cdaf260bc77"
 
 [metadata.files]
 aiohttp = [
