@@ -1,14 +1,12 @@
 """Base class definition for the API clients."""
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 from discord import Embed
 
-from bot.internal.bot import UtilityBot
-
 
 class AbstractAPIClient(ABC):
-    def __init__(self, bot: UtilityBot) -> None:
+    def __init__(self, bot: "UtilityBot") -> None:
         self.bot = bot
 
     @abstractmethod

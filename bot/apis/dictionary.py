@@ -61,7 +61,7 @@ class DictionaryClient(AbstractAPIClient):
             definition = meaning["definitions"][0]["definition"]
             example = meaning["definitions"][0].get("example")
 
-            out_string = f"_({part_of_speech})_ {definition}\n{'_Example:' + example + '_' if example else ''}\n"
+            out_string = f"_({part_of_speech})_ {definition}\n{'_Example: ' + example + '_' if example else ''}\n"
             output["meanings"].append(out_string)
 
         return output

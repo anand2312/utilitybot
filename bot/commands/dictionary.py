@@ -13,7 +13,7 @@ class Dictionary(commands.Cog):
 
     def __init__(self, bot: UtilityBot) -> None:
         self.bot = bot
-        self.dictionary = dictionary.DictionaryClient(bot)
+        self.dictionary = bot.dictionary_client
 
     @commands.command(name="dictionary", aliases=["meaning"], usage="<word>")
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)

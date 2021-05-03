@@ -10,14 +10,14 @@ load_dotenv(find_dotenv())
 
 
 CMD_EXTENSIONS = {"jishaku", "bot.commands.dictionary"}
-SLASH_EXTENSIONS = {}
+SLASH_EXTENSIONS = {"bot.slash_commands.dictionary"}
 
 bot = UtilityBot(
     command_prefix=commands.when_mentioned_or("u!"),
     help_command=commands.MinimalHelpCommand(),
 )  # TODO: implement helpcommand
 
-for ext in CMD_EXTENSIONS:
+for ext in CMD_EXTENSIONS.union(SLASH_EXTENSIONS):
     try:
         bot.load_extension(ext)
     except Exception as e:
@@ -25,12 +25,5 @@ for ext in CMD_EXTENSIONS:
     else:
         logger.info(f"Loaded extension: {ext}")
 
-for ext in SLASH_EXTENSIONS:
-    try:
-        bot.load_extension(ext)
-    except Exception as e:
-        logger.error(f"Exception while loading {ext} extension:\n{e}")
-    else:
-        logger.info(f"Loaded extension: {ext}")
 
 bot.run(os.getenv("TOKEN"))
