@@ -85,7 +85,6 @@ class DictionaryClient(AbstractAPIClient):
             em = Embed(title=data["title"], color=0xF4C2C2)
 
             em.description = data["phonetic"]
-            em.description += data["phonetic"]
             em.description += "\n\n"
             em.description += "\n".join(data["meanings"])
 
