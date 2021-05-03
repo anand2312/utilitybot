@@ -2,11 +2,7 @@ from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
 from discord_slash.utils.manage_commands import create_option
 
-from bot.apis import dictionary
 from bot.internal.bot import UtilityBot
-
-
-GUILD_IDS = [298871492924669954]  # TODO: make global
 
 
 class SlashDictionary(commands.Cog):
@@ -20,7 +16,6 @@ class SlashDictionary(commands.Cog):
     @cog_ext.cog_slash(
         name="dictionary",
         description="Find the meaning of a word easily.",
-        guild_ids=GUILD_IDS,
         options=[
             create_option(
                 name="word",
