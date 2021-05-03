@@ -26,23 +26,23 @@ class DictionaryClient(AbstractAPIClient):
         ) as resp:
             if resp.status == 200:
                 logger.info(f"Fetched meaning of {word}")
-                return await resp.json()
             else:
                 logger.warning(
                     f"Dictionary API returned non-200 status code: {resp.status}"
                 )
+            return await resp.json()
 
-    def parse_data(self, data: Optional[List[dict]] = None) -> dict:
+    def parse_data(self, data: Optional[Union[List[dict], dict]] = None) -> dict:
         if not data:
             # data dict not found
             # i.e the API returned non-200 status code and didn't return anything
             return {"error": "An internal exception occurred."}
 
-        data_dict = data[0]
-
-        if data_dict.get("title"):
+        if isinstance(data, dict):
             # returned a "word not found response", the title only exists in that case
             return {"error": "Could not find the meaning for the word you searched."}
+
+        data_dict = data[0]
 
         output = {}
 
@@ -52,21 +52,21 @@ class DictionaryClient(AbstractAPIClient):
         phonetic_text = data_dict["phonetics"][0]["text"]
         phonetic_audio = data_dict["phonetics"][0]["audio"]
 
-        output["phonetic"] = f"[{phonetic_text}({phonetic_audio})]"
+        output["phonetic"] = f"[{phonetic_text}]({phonetic_audio})"
 
         output["meanings"] = []
 
         for meaning in data_dict["meanings"]:
             part_of_speech = meaning["partOfSpeech"]
             definition = meaning["definitions"][0]["definition"]
-            example = meaning["definitions"][0]["example"]
+            example = meaning["definitions"][0].get("example")
 
-            out_string = f"_({part_of_speech})_ {definition}\n_Example: {example}_\n"
+            out_string = f"_({part_of_speech})_ {definition}\n{'_Example:' + example + '_' if example else ''}\n"
             output["meanings"].append(out_string)
 
         return output
 
-    def prepare_output(self, data: dict, mode: str) -> Optional[Union[str, Embed]]:
+    def prepare_output(self, data: dict, *, mode: str) -> Optional[Union[str, Embed]]:
         if mode not in ["string", "embed"]:
             raise TypeError("Mode must be either string or embed.")
 
