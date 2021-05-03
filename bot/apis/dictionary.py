@@ -66,7 +66,9 @@ class DictionaryClient(AbstractAPIClient):
 
         return output
 
-    def prepare_output(self, data: dict, *, mode: str) -> Optional[Union[str, Embed]]:
+    def prepare_output(
+        self, data: dict, *, mode: str = "embed"
+    ) -> Optional[Union[str, Embed]]:
         if mode not in ["string", "embed"]:
             raise TypeError("Mode must be either string or embed.")
 

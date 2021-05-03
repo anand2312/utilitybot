@@ -41,21 +41,14 @@ class SlashDictionary(commands.Cog):
     async def slash_dictionary(
         self, ctx: SlashContext, word: str, ephemeral: bool = False
     ) -> None:
-        await ctx.defer(hidden=ephemeral)
+        await ctx.defer(hidden=True)
 
         api_data = await self.bot.dictionary_client.fetch_data(word=word)
         parsed_data = self.bot.dictionary_client.parse_data(api_data)
 
-        if ephemeral:
-            output = self.bot.dictionary_client.prepare_output(
-                parsed_data, mode="string"
-            )
-            await ctx.send(output)
-            return
-        else:
-            embed = self.bot.dictionary_client.prepare_output(parsed_data, mode="embed")
-            await ctx.send(embed=embed)
-            return
+        output = self.bot.dictionary_client.prepare_output(parsed_data)
+
+        await ctx.send(embed=output)
 
 
 def setup(bot: UtilityBot) -> None:
