@@ -15,9 +15,7 @@ class SlashDictionary(commands.Cog):
     """
 
     def __init__(self, bot) -> None:
-        print("init runs")
         self.bot = bot
-        print(self.bot)
 
     @cog_ext.cog_slash(
         name="dictionary",
@@ -41,14 +39,14 @@ class SlashDictionary(commands.Cog):
     async def slash_dictionary(
         self, ctx: SlashContext, word: str, ephemeral: bool = False
     ) -> None:
-        await ctx.defer(hidden=True)
+        await ctx.defer(hidden=ephemeral)
 
         api_data = await self.bot.dictionary_client.fetch_data(word=word)
         parsed_data = self.bot.dictionary_client.parse_data(api_data)
 
         output = self.bot.dictionary_client.prepare_output(parsed_data)
 
-        await ctx.send(embed=output)
+        await ctx.send(embed=output, hidden=ephemeral)
 
 
 def setup(bot: UtilityBot) -> None:
