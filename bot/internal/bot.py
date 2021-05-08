@@ -6,7 +6,7 @@ from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option, create_choice
 from loguru import logger
 
-from bot.apis import dictionary  # add more clients here as we go
+from bot.backend import dictionary  # add more clients here as we go
 
 
 class UtilityBot(commands.Bot):

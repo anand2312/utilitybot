@@ -2,7 +2,6 @@ import typing as t
 
 from discord.ext import commands
 
-from bot.apis import dictionary
 from bot.internal.bot import UtilityBot
 
 
