@@ -1,5 +1,6 @@
 from typing import Any
 
+import firebase_admin
 from aiohttp import ClientSession
 from aioscheduler import Manager
 from discord.ext import commands
@@ -21,6 +22,12 @@ class UtilityBot(commands.Bot):
         self.manager = Manager(
             5
         )  # creates a Scheduler manager which manages 5 TimedSchedulers.
+
+        # initializing firebase
+        self.firebase = firebase_admin.initialize_app()
+
+        # initializing firestore (database)
+        self.db = firebase_admin.firestore.client()
 
         self.initialize_api_clients()
 
