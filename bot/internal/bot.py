@@ -1,6 +1,7 @@
 from typing import Any
 
 from aiohttp import ClientSession
+from aioscheduler import Manager
 from discord.ext import commands
 from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option, create_choice
@@ -17,6 +18,9 @@ class UtilityBot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.slash = SlashCommand(self, sync_commands=True, override_type=True)
+        self.manager = Manager(
+            5
+        )  # creates a Scheduler manager which manages 5 TimedSchedulers.
 
         self.initialize_api_clients()
 
@@ -25,6 +29,8 @@ class UtilityBot(commands.Bot):
         if not getattr(self, "http_session", None):
             self.http_session = ClientSession()
             logger.info("Created HTTP ClientSession")
+        self.manager.start()
+        logger.info("Started Scheduler manager")
 
     async def on_command_error(self, ctx: commands.Context, error: Any) -> None:
         ignored = (commands.CommandNotFound,)

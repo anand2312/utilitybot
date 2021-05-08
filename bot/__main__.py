@@ -1,6 +1,7 @@
 import os
 
 from dotenv import find_dotenv, load_dotenv
+from discord import AllowedMentions
 from discord.ext import commands
 from loguru import logger
 
@@ -15,6 +16,7 @@ SLASH_EXTENSIONS = {"bot.slash_commands.dictionary"}
 bot = UtilityBot(
     command_prefix=commands.when_mentioned_or("u!"),
     help_command=commands.MinimalHelpCommand(),
+    allowed_mentions=AllowedMentions(everyone=False, users=True, replied_user=True),
 )  # TODO: implement helpcommand
 
 for ext in CMD_EXTENSIONS.union(SLASH_EXTENSIONS):

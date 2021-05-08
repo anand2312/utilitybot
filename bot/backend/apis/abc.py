@@ -10,7 +10,9 @@ class AbstractAPIClient(ABC):
     Abstract base class for all API clients.
     """
 
-    def __init__(self, bot: "UtilityBot") -> None:
+    def __init__(
+        self, bot: "UtilityBot"
+    ) -> None:  # type: ignore ; this causes circular importing
         self.bot = bot
 
     @abstractmethod
