@@ -18,6 +18,14 @@ yarl = ">=1.0,<2.0"
 speedups = ["aiodns", "brotlipy", "cchardet"]
 
 [[package]]
+name = "aioscheduler"
+version = "1.4.2"
+description = "Scalable, high-performance AsyncIO task scheduler"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "appdirs"
 version = "1.4.4"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -380,7 +388,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "c5ceff44bd7399fdd932c4fa8988e1fdffbdcf8b8c70c82482859cdaf260bc77"
+content-hash = "97fbe75bad8a8987109d9ed8cbce2e982a28249fbcb0950fcd2daf3a4d4d08dc"
 
 [metadata.files]
 aiohttp = [
@@ -421,6 +429,10 @@ aiohttp = [
     {file = "aiohttp-3.7.4.post0-cp39-cp39-win32.whl", hash = "sha256:932bb1ea39a54e9ea27fc9232163059a0b8855256f4052e776357ad9add6f1c9"},
     {file = "aiohttp-3.7.4.post0-cp39-cp39-win_amd64.whl", hash = "sha256:02f46fc0e3c5ac58b80d4d56eb0a7c7d97fcef69ace9326289fb9f1955e65cfe"},
     {file = "aiohttp-3.7.4.post0.tar.gz", hash = "sha256:493d3299ebe5f5a7c66b9819eacdcfbbaaf1a8e84911ddffcdc48888497afecf"},
+]
+aioscheduler = [
+    {file = "aioscheduler-1.4.2-py3-none-any.whl", hash = "sha256:8aaeb7bc01df82136fca38e77f4fc75a503c1d78d23917e15ee8c540e3e4bc23"},
+    {file = "aioscheduler-1.4.2.tar.gz", hash = "sha256:9fb189c77252baf469f1b2f74dc8321f8516bc3a0428b4160314c0df22ebee06"},
 ]
 appdirs = [
     {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
