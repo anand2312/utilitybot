@@ -5,7 +5,7 @@ from typing import List, Optional, Union
 from loguru import logger
 from discord import Color, Embed
 
-from bot.backend.abc import AbstractAPIClient
+from bot.backend.apis.abc import AbstractAPIClient
 
 
 class DictionaryClient(AbstractAPIClient):
