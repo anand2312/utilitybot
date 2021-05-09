@@ -34,17 +34,20 @@ class Reminder:
         """
         Embed to be sent to the user.
         """
-        set_at = self.ctx.message.created_at
+        set_at = getattr(self.ctx.message, "created_at", None)
         em = Embed(
             title=self.title,
             description=self.content,
-            timestamp=set_at,
+            timestamp=set_at if set_at else Embed.Empty,
             color=EmbedColour.Info.value,
         )
         em.set_author(
             name=self.target, icon_url=self.target.avatar_url
         )  # type: ignore ; dpy issue
-        em.set_footer(text="Reminder was set", icon_url=self.ctx.bot.user.avatar_url)
+        em.set_footer(
+            text="Reminder was set" if set_at else "",
+            icon_url=self.ctx.bot.user.avatar_url,
+        )
 
         return em
 

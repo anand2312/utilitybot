@@ -10,7 +10,7 @@ class SlashDictionary(commands.Cog):
     Dictionary cog: Slash commands version.
     """
 
-    def __init__(self, bot) -> None:
+    def __init__(self, bot: UtilityBot) -> None:
         self.bot = bot
 
     @cog_ext.cog_slash(

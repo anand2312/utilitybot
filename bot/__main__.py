@@ -11,7 +11,7 @@ load_dotenv(find_dotenv())
 
 
 CMD_EXTENSIONS = {"jishaku", "bot.commands.dictionary", "bot.commands.reminders"}
-SLASH_EXTENSIONS = {"bot.slash_commands.dictionary"}
+SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 
 bot = UtilityBot(
     command_prefix=commands.when_mentioned_or("u!"),
