@@ -1,8 +1,10 @@
 """Schedule reminders for later."""
+from typing import Optional
 from datetime import datetime, timedelta
 
-from discord import Embed, Forbidden, User
+from discord import Embed, Forbidden
 from discord.ext import commands
+from loguru import logger
 
 from bot.utils.constants import EmbedColour
 
@@ -18,7 +20,7 @@ class Reminder:
         *,
         delay: timedelta,
         content: str,
-        title: str = "Reminder!",
+        title: Optional[str] = "Reminder!",
     ) -> None:
         self.ctx = ctx
         self.bot = ctx.bot
@@ -39,7 +41,9 @@ class Reminder:
             timestamp=set_at,
             color=EmbedColour.Info.value,
         )
-        em.set_author(name=self.target, icon_url=self.target.avatar_url)
+        em.set_author(
+            name=self.target, icon_url=self.target.avatar_url
+        )  # type: ignore ; dpy issue
         em.set_footer(text="Reminder was set", icon_url=self.ctx.bot.user.avatar_url)
 
         return em
@@ -47,13 +51,10 @@ class Reminder:
     def schedule_reminder(self) -> None:
         """
         Schedules a reminder to be sent out later.
-
-        Arguments:
-            bot: The running Bot instance
-            delay: The time after which the reminder must be sent.
         """
         when = datetime.utcnow() + self._delay
         self.bot.manager.schedule(self.execute_reminder(), when)
+        logger.debug(f"{self.target} - Reminder Scheduled for {when}")
 
     async def execute_reminder(self) -> None:
         """
@@ -62,9 +63,13 @@ class Reminder:
         in which they called the command.
         """
         try:
-            await self.target.send(embed=self.embed)
+            await self.target.send(embed=self.embed)  # type: ignore ; dpy issue
+            logger.debug(f"{self.target} - Reminder sent")
         except Forbidden:
             await self.ctx.send(
-                content=f"{self.target.mention}, here's your reminder:",
+                content=f"{self.target.mention}, here's your reminder:",  # type: ignore ; dpy issue
                 embed=self.embed,
+            )
+            logger.debug(
+                f"{self.target} had their DMs disabled, pinged in invocation channel"
             )

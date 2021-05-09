@@ -130,3 +130,6 @@ dmypy.json
 
 # firebase admin auth details path
 firebase-auth.json
+
+# vscode stuff
+.vscode

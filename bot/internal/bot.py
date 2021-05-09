@@ -1,3 +1,6 @@
+"""Bot definition."""
+import os
+import sys
 from typing import Any
 
 import firebase_admin
@@ -6,6 +9,7 @@ from aioscheduler import Manager
 from discord.ext import commands
 from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option, create_choice
+from google.cloud import firestore
 from loguru import logger
 
 from bot.backend.apis import dictionary  # add more clients here as we go
@@ -27,7 +31,13 @@ class UtilityBot(commands.Bot):
         self.firebase = firebase_admin.initialize_app()
 
         # initializing firestore (database)
-        self.db = firebase_admin.firestore.client()
+        self.db = firestore.AsyncClient()
+
+        # set logger level
+        debug = (
+            os.environ.get("DEBUG", False) == "true"
+        )  # if not set, this will be False
+        # logger.add(sys.stderr, level="DEBUG" if debug else "INFO")
 
         self.initialize_api_clients()
 
