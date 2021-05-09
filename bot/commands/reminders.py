@@ -1,6 +1,5 @@
 """Standard reminder command."""
 from datetime import datetime
-from typing import Optional
 
 from discord import Embed
 from discord.ext import commands
@@ -40,11 +39,12 @@ class ReminderCog(commands.Cog):
 
         embed.set_footer(text="You will be reminded", icon_url=ctx.bot.user.avatar_url)
         embed.set_author(
-            name=ctx.author.display_name, url=ctx.author.avatar_url
-        )  # type: ignore ; dpy issue
+            name=ctx.author.display_name,  # type: ignore ; dpy issue
+            url=ctx.author.avatar_url,  # type: ignore ; dpy issue
+        )
 
         Reminder(
-            ctx, delay=delay, content=content
+            ctx, delay=delay, content=content  # type: ignore ; converter
         ).schedule_reminder()  # type: ignore ; converter
 
         await ctx.reply(embed=embed)
