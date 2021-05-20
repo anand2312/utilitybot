@@ -43,7 +43,7 @@ class UtilityBot(commands.Bot):
         self.environ = os.environ
 
         # bot variable for list of cryptos to cache
-        self._crypto_list = ["BTC", "ETH", "ADA", "XRM", "XLM", "XRP", "NANO", "VET"]
+        self._crypto_list = ["BTC", "ETH", "ADA", "XRM", "XLM", "XRP", "NANO", "VET", "DOGE"]
 
         # cache API response data
 
