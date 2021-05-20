@@ -10,7 +10,12 @@ from bot.internal.bot import UtilityBot
 load_dotenv(find_dotenv())
 
 
-CMD_EXTENSIONS = {"jishaku", "bot.commands.dictionary", "bot.commands.reminders"}
+CMD_EXTENSIONS = {
+    "jishaku",
+    "bot.commands.dictionary",
+    "bot.commands.reminders",
+    "bot.commands.crypto",
+}
 SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 
 bot = UtilityBot(
