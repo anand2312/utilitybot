@@ -7,7 +7,7 @@ from discord.ext import commands
 from bot.utils.constants import EmbedColour
 
 PAIN_PASTE_RE = re.compile(r"(?P<link>https://why\.life\-is\-pa\.in/[A-Za-z0-9]{6})")
-POOP_PASTE_RE = re.compile(r"(?P<link>https://poopoolicious\.likes\-throwing\.rocks/[A-Za-z0-9]{6})"
+POOP_PASTE_RE = re.compile(r"(?P<link>https://poopoolicious\.likes\-throwing\.rocks/[A-Za-z0-9]{6})")
 
 class Starboard(commands.Cog):
         """
