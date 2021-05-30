@@ -96,7 +96,7 @@ class Starboard(commands.Cog):
             self._awaiting_stars[reaction.message] = current_users
             
             if len(current_users) == threshold:
-                channel = await self.get_guild_starboard()
+                channel = await self.get_guild_starboard(reaction.message.guild.id)
                 
                 # just for crajy server, if one of the sharex upload links are sent, use that as the image kwarg for embed
                 if reaction.message.guild.id == 298871492924669954:
