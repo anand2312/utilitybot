@@ -77,7 +77,7 @@ class Starboard(commands.Cog):
                 link = matched.groupdict()["link"]
                 embed.set_image(url=link+".png")
             
-            emded.timestamp = msg.created_at
+            embed.timestamp = msg.created_at
             
             return embed        
             
