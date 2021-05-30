@@ -78,7 +78,7 @@ class Starboard(commands.Cog):
             return embed        
             
         @commands.Cog.listener()
-        async def on_reaction_add(reaction: discord.Reaction, user: Union[discord.User, discord.Member]) -> None:
+        async def on_reaction_add(self, reaction: discord.Reaction, user: Union[discord.User, discord.Member]) -> None:
             if reaction.me:
                 return
             
