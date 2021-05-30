@@ -70,6 +70,10 @@ class Starboard(commands.Cog):
                 
             if is_crajy:
                 matched = PAIN_PASTE_RE.search(msg.content) or POOP_PASTE_RE.search(msg.content)
+                if not matched:
+                    embed.timestamp = msg.created_at
+                    return embed
+                       
                 link = matched.groupdict()["link"]
                 embed.set_image(url=link+".png")
             
