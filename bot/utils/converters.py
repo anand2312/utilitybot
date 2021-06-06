@@ -11,7 +11,7 @@ FORMATTED_CODE_REGEX = re.compile(
 )
 
 
-class CodeBlockConverter(Converter):
+class CodeBlockConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, code: str):
         """
         Returns a codeblock from the message.
