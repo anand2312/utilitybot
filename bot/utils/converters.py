@@ -1,8 +1,26 @@
 """Argument type converters."""
 import itertools
 from datetime import timedelta
+import re
 
 from discord.ext import commands
+
+
+FORMATTED_CODE_REGEX = re.compile(
+    r"```(?P<lang>[a-z+]+)?\s*" r"(?P<code>.*)" r"\s*" r"```", re.DOTALL | re.IGNORECASE
+)
+
+
+class CodeBlockConverter(Converter):
+    async def convert(self, ctx: commands.Context, code: str):
+        """
+        Returns a codeblock from the message.
+        """
+        match = FORMATTED_CODE_REGEX.search(code)
+        if match:
+            code = match.group("code")
+
+        return match, code
 
 
 class TimeConversionError(Exception):
