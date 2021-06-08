@@ -57,6 +57,9 @@ class EvalListener(commands.Cog):
         Add a playbutton reaction to messages with codeblocks, to evaluate the code and
         send the output in chat.
         """
+        if message.author.bot:
+            return
+        
         ctx = await self.bot.get_context(message)
         match, code = await CodeblockConverter().convert(ctx, message.content)
         
@@ -94,6 +97,9 @@ class EvalListener(commands.Cog):
         """
         Re-evaluate code if they are edited.
         """
+        if after.author.bot:
+            return
+
         bot_reply = self._eval_messages.get(before)
         
         if not bot_reply:  # not a code eval block, ignore
