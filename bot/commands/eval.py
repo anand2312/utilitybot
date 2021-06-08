@@ -15,6 +15,9 @@ PISTON_API_URL = "https://emkc.org/api/v1/piston/execute"
 class EvalListener(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        
+        # update bot's task loop mapping
+        self.bot.task_loops["eval_message_cache"] = self.clear_stale_eval_messages
         self._eval_messages: Mapping[discord.Message, discord.Message] = {}  # dict of code message to bot's reply
      
     def prepare_file_output(self, content: str, language: str) -> discord.File:
@@ -63,7 +66,11 @@ class EvalListener(commands.Cog):
         ctx = await self.bot.get_context(message)
         match, code = await CodeblockConverter().convert(ctx, message.content)
         
-        language = match.group("lang")
+        try:
+            language = match.group("lang")
+        except AttributeError:
+            # match returned None
+            return
         
         to_eval = await self.wait_for_response(message)
         
@@ -105,11 +112,15 @@ class EvalListener(commands.Cog):
         if not bot_reply:  # not a code eval block, ignore
             return
         
-        ctx = await self.bot.get_context(message)
-        match, code = await CodeblockConverter().convert(ctx, message.content)
-        language = match.group("lang")
+        ctx = await self.bot.get_context(after)
+        match, code = await CodeblockConverter().convert(ctx, after.content)
+        try:
+            language = match.group("lang")
+        except AttributeError:
+            # match returned None
+            return
         
-        to_eval = await self.wait_for_response(message, emoji="🔁")
+        to_eval = await self.wait_for_response(after, emoji="🔁")
         
         if not to_eval:
             return
