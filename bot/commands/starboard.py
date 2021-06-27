@@ -110,6 +110,8 @@ class Starboard(commands.Cog):
                 await channel.send(embed=embed)
                 del self._awaiting_stars[reaction.message]
                 self._starred.add(reaction.message)
-                          
+                await reaction.message.add_reaction("✅")
+                       
+                        
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(Starboard(bot))
