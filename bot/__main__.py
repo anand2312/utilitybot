@@ -17,7 +17,8 @@ CMD_EXTENSIONS = {
     "bot.commands.crypto",
     "bot.commands.starboard",
     "bot.commands.eval",
-    "bot.commands.suggest"
+    "bot.commands.suggest",
+    "bot.commands.issue_linking",
 }
 SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 
