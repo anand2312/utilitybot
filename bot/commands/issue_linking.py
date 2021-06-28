@@ -25,7 +25,7 @@ class Issues(commands.Cog):
     def get_issue_url_parts(self, match: re.Match) -> Tuple:
         as_dict = match.groupdict()
 
-        org = as_dict.get("org", "cs-gang")
+        org = as_dict.get("org") or "cs-gang"
         repo = as_dict.get("repo")
         number = as_dict.get("number")
 
@@ -44,7 +44,7 @@ class Issues(commands.Cog):
         org, repo, num = self.get_issue_url_parts(match)
 
         logger.info(f"Matched issue: {org}/{repo}#{num}")
-        link = Issues.LINK_FORMAT(org=org, repo=repo, number=num)
+        link = Issues.LINK_FORMAT(org=org, repo=repo, issue_number=num)
 
         await message.reply(link)
         return
