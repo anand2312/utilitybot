@@ -47,7 +47,7 @@ class Issues(commands.Cog):
         link = Issues.LINK_FORMAT(org=org, repo=repo, issue_number=num)
         
         async with self.bot.http_session.get(link) as resp:
-            if resp.status_code == 200:
+            if resp.status == 200:
                 await message.reply(link)
             else:
                 logger.info("Issue/PR did not exist, ignoring")
