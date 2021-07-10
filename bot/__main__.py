@@ -1,13 +1,9 @@
-import os
-
-from dotenv import find_dotenv, load_dotenv
+from decouple import config
 from discord import AllowedMentions
 from discord.ext import commands
 from loguru import logger
 
 from bot.internal.bot import UtilityBot
-
-load_dotenv(find_dotenv())
 
 
 CMD_EXTENSIONS = {
@@ -15,7 +11,6 @@ CMD_EXTENSIONS = {
     "bot.commands.dictionary",
     "bot.commands.reminders",
     "bot.commands.crypto",
-    "bot.commands.starboard",
     "bot.commands.eval",
     "bot.commands.suggest",
     "bot.commands.issue_linking",
@@ -37,4 +32,4 @@ for ext in CMD_EXTENSIONS.union(SLASH_EXTENSIONS):
         logger.info(f"Loaded extension: {ext}")
 
 
-bot.run(os.getenv("TOKEN"))
+bot.run(config("TOKEN"))
