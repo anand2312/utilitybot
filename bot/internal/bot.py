@@ -2,13 +2,12 @@
 import os
 from typing import Any, Mapping
 
-import firebase_admin
 from aiohttp import ClientSession
 from aioscheduler import Manager
+from asyncpg import create_pool
+from decouple import config
 from discord.ext import commands
 from discord_slash import SlashCommand
-from discord_slash.utils.manage_commands import create_option, create_choice
-from google.cloud import firestore
 from loguru import logger
 
 from bot.backend.apis import dictionary  # add more clients here as we go
@@ -27,12 +26,6 @@ class UtilityBot(commands.Bot):
             5
         )  # creates a Scheduler manager which manages 5 TimedSchedulers.
 
-        # initializing firebase
-        self.firebase = firebase_admin.initialize_app()
-
-        # initializing firestore (database)
-        self.db = firestore.AsyncClient()
-
         # set logger level
         debug = (
             os.environ.get("DEBUG", False) == "true"
@@ -43,7 +36,17 @@ class UtilityBot(commands.Bot):
         self.environ = os.environ
 
         # bot variable for list of cryptos to cache
-        self._crypto_list = ["BTC", "ETH", "ADA", "XRM", "XLM", "XRP", "NANO", "VET", "DOGE"]
+        self._crypto_list = [
+            "BTC",
+            "ETH",
+            "ADA",
+            "XRM",
+            "XLM",
+            "XRP",
+            "NANO",
+            "VET",
+            "DOGE",
+        ]
 
         # cache API response data
 
@@ -56,6 +59,9 @@ class UtilityBot(commands.Bot):
         # map of running task loops
         self.task_loops = {}
 
+        # create db pool; await on_ready
+        self.db_pool = create_pool(config("DB_URI"))
+
         self.initialize_api_clients()
 
     async def on_ready(self) -> None:
@@ -67,6 +73,9 @@ class UtilityBot(commands.Bot):
             logger.info("Created HTTP ClientSession")
             # start task loops
             self.start_task_loops()
+            # actually connect to the db
+            await self.db_pool
+            logger.info("Conneced to database")
 
         self.manager.start()
         logger.info("Started Scheduler manager")
