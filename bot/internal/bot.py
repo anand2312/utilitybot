@@ -1,17 +1,20 @@
 """Bot definition."""
 import os
-from typing import Any, Mapping
+from typing import Any, Mapping, Type
 
 from aiohttp import ClientSession
 from aioscheduler import Manager
 from asyncpg import create_pool
 from decouple import config
 from discord.ext import commands
+from discord.ext.commands.context import Context
+from discord.message import Message
 from discord_slash import SlashCommand
 from loguru import logger
 
 from bot.backend.apis import dictionary  # add more clients here as we go
 from bot.backend.apis import crypto
+from bot.internal.context import UtilityContext
 
 
 class UtilityBot(commands.Bot):
@@ -94,6 +97,11 @@ class UtilityBot(commands.Bot):
             return
         else:
             raise error
+
+    async def get_context(
+        self, message: Message, *, cls: Type[Context] = None
+    ) -> Context:
+        return await super().get_context(message, cls=cls or UtilityContext)
 
     def initialize_api_clients(self) -> None:
         # instantiate more clients here as we go
