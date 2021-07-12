@@ -75,6 +75,7 @@ class UtilityBot(commands.Bot):
             self.start_task_loops()
             # actually connect to the db
             await self.db_pool
+            logger.info("Conneced to database")
 
         self.manager.start()
         logger.info("Started Scheduler manager")
