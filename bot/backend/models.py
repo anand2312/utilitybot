@@ -17,24 +17,26 @@ class ContentRecord:
     Abstract base class representing the methods that each content type should allow.
     """
 
-    user_id: int
+    user_id: int  # the bare minimum fields needed for an operation (delete)
     name: str
-    type: ContentType
-    recommended_by: int
+    type: ContentType = ContentType.Anime  # this default is a lazy way to quiet pylance down
+    recommended_by: Optional[int] = None
     id: Optional[int] = None  # this field exists only when retrieved from the db.
     url: Optional[str] = None
 
     @classmethod
     async def by_name(
-        cls, conn: asyncpg.Connection, *, name: str
+        cls, conn: asyncpg.Connection, *, name: str, user: int
     ) -> Optional["ContentRecord"]:
         """
         Fetches an existing Content record for a specific user.
         NOTE: query is run with '%name%'
         """
-        logger.debug(f"Retrieving content with name {name}")
+        logger.debug(f"Retrieving content with name {name} for user {user}")
         r = await conn.fetchrow(
-            "SELECT * FROM user_content WHERE name LIKE $1", f"%{name.lower()}%"
+            "SELECT * FROM user_content WHERE name LIKE $1 AND user_id = $2",
+            f"%{name.lower()}%",
+            user,
         )
 
         if not r:
@@ -74,7 +76,7 @@ class ContentRecord:
         """
         Saves a new Content record to the database.
         """
-        existing = await self.__class__.by_name(conn, name=self.name)
+        existing = await self.__class__.by_name(conn, name=self.name, user=self.user_id)
 
         if not existing:
             logger.info(
@@ -94,7 +96,12 @@ class ContentRecord:
         """
         Deletes a content record from the database.
         """
-        return await conn.execute("DELETE FROM user_content WHERE id = $1", self.id)
+        logger.info(f"Deleting content with name {self.name} for user {self.id}")
+        return await conn.execute(
+            "DELETE FROM user_content WHERE id = $1 AND LOWER(content_name) = $2",
+            self.id,
+            self.name,
+        )
 
 
 @dataclass
@@ -118,6 +125,12 @@ class User:
             content_type.value,
         )
         return [ContentRecord._parse_db_output(record) for record in data]
+
+    async def remove_from_list(self, conn: asyncpg.Connection, *, name: str) -> None:
+        """
+        Removes a specific item by it's name from the user's 'list'.
+        """
+        await ContentRecord(user_id=self.id, name=name).delete(conn)
 
 
 @dataclass
