@@ -8,7 +8,9 @@ Poetry
 PostgreSQL
 
 # .env example
+```
 TOKEN=token
 COINMARKETCAP_API_KEY=key
 DEBUG=true
 DB_URI=postgresql://username:pw@localhost:5432/utilitybot
+```
