@@ -14,7 +14,7 @@ from bot.utils.constants import ContentType
 @dataclass
 class ContentRecord:
     """
-    Abstract base class representing the methods that each content type should allow.
+    Represents a content record on the database.
     """
 
     user_id: int  # the bare minimum fields needed for an operation (delete)
