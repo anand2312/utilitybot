@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS guild_users (
 
 CREATE TABLE IF NOT EXISTS user_content (
     user_id BIGINT NOT NULL REFERENCES users(user_id),
-    content_name TEXT NOT NULL,  -- run an UPDATE ... ON CONFLICT DO INSERT here to avoid duplication
+    content_name TEXT NOT NULL,  -- run an INSERT ... ON CONFLICT DO UPDATE here to avoid duplication
     content_type TEXT NOT NULL,
     content_url TEXT,
     recommended_by BIGINT REFERENCES users(user_id)
