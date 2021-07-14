@@ -34,7 +34,7 @@ class ContentRecord:
         """
         logger.debug(f"Retrieving content with name {name} for user {user}")
         r = await conn.fetchrow(
-            "SELECT * FROM user_content WHERE name LIKE $1 AND user_id = $2",
+            "SELECT * FROM user_content WHERE LOWER(name) LIKE $1 AND user_id = $2",
             f"%{name.lower()}%",
             user,
         )
@@ -53,7 +53,7 @@ class ContentRecord:
         Fetches a content record by its ID.
         """
         logger.debug(f"Retrieving content with ID {id}")
-        r = await conn.fetchrow("SELECT * FROM user_content WHERE name = $1", id)
+        r = await conn.fetchrow("SELECT * FROM user_content WHERE id = $1", id)
 
         if not r:
             logger.info(f"Content with ID {id} did not exist")
