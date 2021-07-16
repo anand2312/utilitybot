@@ -93,6 +93,11 @@ class ContentRecord:
                 self.url,
             )
             return self
+        else:
+            logger.info(
+                f"Content record with name {self.name} for user {self.user_id} already exists"
+            )
+            return self
 
     async def delete(self, conn: asyncpg.Connection) -> str:
         """
@@ -100,10 +105,10 @@ class ContentRecord:
         """
         logger.info(f"Deleting content with name {self.name} for user {self.id}")
         return await conn.execute(
-            "DELETE FROM user_content WHERE id = $1 AND LOWER(content_name) = $2",
-            self.id,
+            "DELETE FROM user_content WHERE user_id = $1 AND LOWER(content_name) = $2",
+            self.user_id,
             self.name,
-        )
+        )  # lowercase names must match
 
 
 @dataclass
@@ -132,6 +137,7 @@ class User:
         """
         Removes a specific item by it's name from the user's 'list'.
         """
+        logger.info("Deleting content with name {name} for user {self.id}")
         await ContentRecord(user_id=self.id, name=name).delete(conn)
 
 
@@ -142,7 +148,7 @@ class Guild:
     """
 
     id: int
-    prefix: str
+    prefix: Optional[str] = "u!"
 
     async def get_prefix(self, conn: asyncpg.Connection) -> Optional[str]:
         return await conn.fetchval(
@@ -164,3 +170,26 @@ class Guild:
         )
         self.prefix = prefix
         return prefix
+
+    async def save(self, conn: asyncpg.Connection) -> Optional[str]:
+        """Save a guild to the database."""
+        logger.info(f"Saving guild {self.id} to the database")
+        return await conn.execute("INSERT INTO guilds VALUES ($1)", self.id)
+
+    async def bulk_save_members(
+        self, conn: asyncpg.Connection, *, members: List[int]
+    ) -> Optional[str]:
+        """Save the guilds members to the database."""
+        logger.info(f"Saving guild {self.id} members to global users table")
+        await conn.executemany(
+            "INSERT INTO users VALUES ($1) ON CONFLICT DO NOTHING", members
+        )
+        logger.info(f"Saving guild {self.id} members to guild-users table")
+        await conn.executemany(
+            "INSERT INTO guild_users VALUES($1, $2)",
+            [(self.id, member) for member in members],
+        )
+        logger.info(f"Completed inserting guild {self.id} members to database!")
+
+    async def delete(self, conn: asyncpg.Connection) -> Optional[str]:
+        return await conn.execute("DELETE FROM guilds WHERE guild_id = $1", self.id)
