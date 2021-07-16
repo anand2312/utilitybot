@@ -182,7 +182,8 @@ class Guild:
         """Save the guilds members to the database."""
         logger.info(f"Saving guild {self.id} members to global users table")
         await conn.executemany(
-            "INSERT INTO users VALUES ($1) ON CONFLICT DO NOTHING", members
+            "INSERT INTO users VALUES ($1) ON CONFLICT DO NOTHING",
+            [(m,) for m in members],
         )
         logger.info(f"Saving guild {self.id} members to guild-users table")
         await conn.executemany(
