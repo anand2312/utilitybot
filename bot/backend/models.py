@@ -19,7 +19,9 @@ class ContentRecord:
 
     user_id: int  # the bare minimum fields needed for an operation (delete)
     name: str
-    type: ContentType = ContentType.Anime  # this default is a lazy way to quiet pylance down
+    type: ContentType = (
+        ContentType.Anime
+    )  # this default is a lazy way to quiet pylance down
     recommended_by: Optional[int] = None
     id: Optional[int] = None  # this field exists only when retrieved from the db.
     url: Optional[str] = None
