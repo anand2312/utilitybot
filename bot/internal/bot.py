@@ -2,19 +2,19 @@
 import os
 from typing import Any, Mapping, Type
 
+import discord
 from aiohttp import ClientSession
 from aioscheduler import Manager
 from asyncpg import create_pool
 from decouple import config
 from discord.ext import commands
-from discord.ext.commands.context import Context
-from discord.message import Message
 from discord_slash import SlashCommand
 from loguru import logger
 
 from bot.backend.apis import dictionary  # add more clients here as we go
 from bot.backend.apis import crypto
 from bot.internal.context import UtilityContext
+from bot.backend.models import Guild
 
 
 class UtilityBot(commands.Bot):
@@ -98,9 +98,24 @@ class UtilityBot(commands.Bot):
         else:
             raise error
 
+    async def on_guild_join(self, guild: discord.Guild) -> None:
+        # register new guilds to the database
+        logger.info(f"Added to {guild.name} with {guild.member_count} members.")
+        db_guild = Guild(id=guild.id)
+
+        async with self.db_pool.acquire() as conn:
+            await db_guild.save(conn)
+            member_ids = [member.id for member in guild.members]
+            await db_guild.bulk_save_members(conn, members=member_ids)
+
+    async def on_guild_remove(self, guild: discord.Guild) -> None:
+        # delete the guilds data when they remove the bot
+        async with self.db_pool.acquire() as conn:
+            await Guild(id=guild.id).delete(conn)
+
     async def get_context(
-        self, message: Message, *, cls: Type[Context] = None
-    ) -> Context:
+        self, message: discord.Message, *, cls: Type[commands.Context] = None
+    ) -> commands.Context:
         return await super().get_context(message, cls=cls or UtilityContext)
 
     def initialize_api_clients(self) -> None:
