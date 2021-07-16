@@ -1,7 +1,6 @@
 """Search and recommend anime and manga."""
 from typing import TYPE_CHECKING, Optional
 
-from bot.backend.models import ContentRecord, User
 from bot.utils.constants import ContentType
 
 if TYPE_CHECKING:
@@ -19,28 +18,17 @@ query ($search: String) {
       native
     }
     siteUrl
-    description
-    averageScore
-    status
-    tags{
-      name
-    }
   }
 }
 """.format
 CHARACTER_QUERY = """
 query ($search: String) {
   Character(search: $search) {
-    id
     name {
       first
       last
     }
     siteUrl
-    description
-    image {
-      large
-    }
   }
 }
 """
@@ -50,9 +38,9 @@ class ContentNotFoundError(ValueError):
     """Error raised when a specific query could not be found."""
 
 
-async def get_anime_manga_link(
+async def get_anime_manga(
     bot: UtilityBot, *, query: str, _type: ContentType
-) -> Optional[str]:
+) -> Optional[dict]:
     """
     Gets the URL for a specific anime or manga from the Anilist API.
 
@@ -62,7 +50,7 @@ async def get_anime_manga_link(
         _type: Whether to search for anime or manga.
 
     Returns:
-        The requested anime/manga URL
+        The requested anime/manga URL and name
 
     Raises:
         ContentNotFoundError
@@ -73,14 +61,15 @@ async def get_anime_manga_link(
     ) as resp:
         try:
             d = await resp.json()
-            return d["data"]["Media"]["siteUrl"]
+            d = d["data"]["Media"]
+            return {"siteUrl": d["siteUrl"], "title": d["title"]["romaji"]}
         except KeyError as e:
             raise ContentNotFoundError(
                 f"Could not find {_type.value} with name {query}"
             ) from e
 
 
-async def get_character_link(bot: UtilityBot, *, name: str) -> Optional[str]:
+async def get_character(bot: UtilityBot, *, name: str) -> Optional[dict]:
     """
     Gets the URL for a specific character from the Anilist API.
 
@@ -89,7 +78,7 @@ async def get_character_link(bot: UtilityBot, *, name: str) -> Optional[str]:
         name: The character to search for
 
     Returns:
-        The requested character URL
+        The requested character URL and name
 
     Raises:
         ContentNotFoundError
@@ -99,8 +88,10 @@ async def get_character_link(bot: UtilityBot, *, name: str) -> Optional[str]:
     ) as resp:
         try:
             d = await resp.json()
-            return d["data"]["Media"]["siteUrl"]
+            d = d["data"]["Media"]
+            out = {"name": " ".join(d["name"].values()), "siteUrl": d["siteUrl"]}
+            return out
         except KeyError as e:
             raise ContentNotFoundError(
-                f"Could not find characyer with name {name}"
+                f"Could not find character with name {name}"
             ) from e

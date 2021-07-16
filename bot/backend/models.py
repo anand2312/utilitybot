@@ -133,6 +133,17 @@ class User:
         )
         return [ContentRecord._parse_db_output(record) for record in data]
 
+    async def add_to_list(
+        self, conn: asyncpg.Connection, *, record: ContentRecord
+    ) -> Optional[ContentRecord]:
+        """
+        Adds a content record to the user's list.
+
+        Returns:
+            The saved content record object
+        """
+        return await record.save(conn)
+
     async def remove_from_list(self, conn: asyncpg.Connection, *, name: str) -> None:
         """
         Removes a specific item by it's name from the user's 'list'.
