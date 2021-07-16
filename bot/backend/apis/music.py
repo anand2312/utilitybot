@@ -16,6 +16,8 @@ client_secret = "bro"
 # Make from music command's file and pass it to the class in this file
 auth_manager = SpotifyClientCredentials(client_id, client_secret)
 
+# TODO: Make everything async
+
 
 class MusicClient:
     """Manage music searches and recommendations"""
