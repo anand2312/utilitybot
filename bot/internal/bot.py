@@ -108,6 +108,11 @@ class UtilityBot(commands.Bot):
             member_ids = [member.id for member in guild.members]
             await db_guild.bulk_save_members(conn, members=member_ids)
 
+    async def on_guild_remove(self, guild: discord.Guild) -> None:
+        # delete the guilds data when they remove the bot
+        async with self.db_pool.acquire() as conn:
+            await Guild(id=guild.id).delete(conn)
+
     async def get_context(
         self, message: discord.Message, *, cls: Type[commands.Context] = None
     ) -> commands.Context:

@@ -190,3 +190,6 @@ class Guild:
             [(self.id, member) for member in members],
         )
         logger.info(f"Completed inserting guild {self.id} members to database!")
+
+    async def delete(self, conn: asyncpg.Connection) -> Optional[str]:
+        return await conn.execute("DELETE FROM guilds WHERE guild_id = $1", self.id)
