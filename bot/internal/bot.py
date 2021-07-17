@@ -1,6 +1,7 @@
 """Bot definition."""
-import os
-from typing import Any, Mapping, Type
+from typing import Any
+from typing import Mapping
+from typing import Type
 
 import discord
 from aiohttp import ClientSession
@@ -11,11 +12,11 @@ from discord.ext import commands
 from discord_slash import SlashCommand
 from loguru import logger
 
-from bot.backend.apis import dictionary  # add more clients here as we go
 from bot.backend.apis import crypto
-from bot.internal.context import UtilityContext
+from bot.backend.apis import dictionary  # add more clients here as we go
 from bot.backend.exceptions import ContentNotFoundError
 from bot.backend.models import Guild
+from bot.internal.context import UtilityContext
 
 
 class UtilityBot(commands.Bot):

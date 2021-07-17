@@ -16,23 +16,26 @@ class Weeb(commands.Cog):
     @commands.command(name="anime")
     async def anime(self, ctx: UtilityContext, *, name: str) -> None:
         """Search Anilist for a specific anime."""
-        resp = await anime.get_anime_manga(
-            self.bot, query=name, _type=ContentType.Anime
-        )
-        await ctx.send(resp["siteUrl"])
+        async with ctx.typing():
+            resp = await anime.get_anime_manga(
+                self.bot, query=name, _type=ContentType.Anime
+            )
+            await ctx.send(resp["siteUrl"])
 
     @commands.command(name="manga")
     async def manga(self, ctx: UtilityContext, *, name: str) -> None:
         """Search Anilist for a specific manga."""
-        resp = await anime.get_anime_manga(
-            self.bot, query=name, _type=ContentType.Manga
-        )
-        await ctx.send(resp["siteUrl"])
+        async with ctx.typing():
+            resp = await anime.get_anime_manga(
+                self.bot, query=name, _type=ContentType.Manga
+            )
+            await ctx.send(resp["siteUrl"])
 
     @commands.command(name="character")
     async def character(self, ctx: UtilityContext, *, name: str) -> None:
-        resp = await anime.get_character(self.bot, name=name)
-        await ctx.send(resp["name"])
+        async with ctx.typing():
+            resp = await anime.get_character(self.bot, name=name)
+            await ctx.send(resp["siteUrl"])
 
 
 def setup(bot: UtilityBot) -> None:

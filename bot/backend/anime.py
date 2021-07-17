@@ -1,26 +1,25 @@
 """Search and recommend anime and manga."""
-from typing import TYPE_CHECKING
+from __future__ import annotations
+
+from loguru import logger
 
 from bot.backend.exceptions import ContentNotFoundError
+from bot.internal.bot import UtilityBot
 from bot.utils.constants import ContentType
 
-if TYPE_CHECKING:
-    from bot.internal.bot import UtilityBot
-
-# TODO: help finish nino async
 
 API_URL = "https://graphql.anilist.co"
 _QUERY = """
-query ($search: String) {
-  Media (search: $search, type: {type}) {
-    title {
+query ($search: String) {{
+  Media (search: $search, type: {_type}) {{
+    title {{
       romaji
       english
       native
-    }
+    }}
     siteUrl
-  }
-}
+  }}
+}}
 """.format
 CHARACTER_QUERY = """
 query ($search: String) {
@@ -50,15 +49,22 @@ async def get_anime_manga(bot: UtilityBot, *, query: str, _type: ContentType) ->
     Raises:
         ContentNotFoundError
     """
-    query_string = _QUERY(type=_type.value.upper())
+    query_string = _QUERY(_type=_type.value.upper())
     async with bot.http_session.post(
         API_URL, json={"query": query_string, "variables": {"search": query}}
     ) as resp:
+        logger.info(f"Searching Anilist for {query} {_type.value}")
         try:
             d = await resp.json()
-            d = d["data"]["Media"]
-            return {"siteUrl": d["siteUrl"], "title": d["title"]["romaji"]}
+            return {
+                "siteUrl": d["data"]["Media"]["siteUrl"],
+                "title": d["data"]["Media"]["title"]["romaji"],
+            }
         except KeyError as e:
+            logger.warning(
+                f"Could not find content {_type.value}: {query}\nAPI status: {resp.status}"
+            )
+            logger.debug(str(d))  # type: ignore ; not unbound
             raise ContentNotFoundError(
                 f"Could not find {_type.value} with name {query}"
             ) from e
@@ -81,12 +87,19 @@ async def get_character(bot: UtilityBot, *, name: str) -> dict:
     async with bot.http_session.post(
         API_URL, json={"query": CHARACTER_QUERY, "variables": {"search": name}}
     ) as resp:
+        logger.info(f"Searching anilist for character: {name}")
         try:
             d = await resp.json()
-            d = d["data"]["Media"]
-            out = {"name": " ".join(d["name"].values()), "siteUrl": d["siteUrl"]}
+            out = {
+                "name": " ".join(d["data"]["Character"]["name"].values()),
+                "siteUrl": d["data"]["Character"]["siteUrl"],
+            }
             return out
         except KeyError as e:
+            logger.warning(
+                f"Could not find character: {name}\nAPI status code {resp.status}"
+            )
+            logger.debug(str(d))  # type: ignore; nope, not unbound
             raise ContentNotFoundError(
                 f"Could not find character with name {name}"
             ) from e
