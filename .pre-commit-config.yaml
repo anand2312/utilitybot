@@ -9,10 +9,14 @@ repos:
     rev: 19.3b0
     hooks:
     -   id: black
--   repo: https://github.com/asottile/reorder_python_imports
-    rev: v2.5.0
+-   repo: local
     hooks:
     -   id: reorder-python-imports
+        name: Reorder-Imports
+        description: Reorders imports and runs the module within the local environment
+        entry: poetry run reorder-python-imports .
+        language: system
+        types: [python]
 ci:
     autofix_commit_msg: |
         [pre-commit.ci] auto fixes from pre-commit.com hooks
