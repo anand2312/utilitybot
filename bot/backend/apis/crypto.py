@@ -3,6 +3,7 @@ from typing import Any
 from decouple import config
 
 from loguru import logger
+from decouple import config
 from discord import Embed
 
 from bot.backend.apis.abc import AbstractAPIClient

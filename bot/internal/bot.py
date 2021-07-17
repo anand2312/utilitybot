@@ -31,13 +31,8 @@ class UtilityBot(commands.Bot):
         )  # creates a Scheduler manager which manages 5 TimedSchedulers.
 
         # set logger level
-        debug = (
-            os.environ.get("DEBUG", False) == "true"
-        )  # if not set, this will be False
+        debug = config("DEBUG", False) == "true"  # if not set, this will be False
         # logger.add(sys.stderr, level="DEBUG" if debug else "INFO")
-
-        # set os.environ to a bot variable for easy access
-        self.environ = os.environ
 
         # bot variable for list of cryptos to cache
         self._crypto_list = [
@@ -79,7 +74,7 @@ class UtilityBot(commands.Bot):
             self.start_task_loops()
             # actually connect to the db
             await self.db_pool
-            logger.info("Conneced to database")
+            logger.info("Connected to database")
 
         self.manager.start()
         logger.info("Started Scheduler manager")

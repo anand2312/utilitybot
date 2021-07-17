@@ -1,5 +1,5 @@
 from decouple import config
-from discord import AllowedMentions
+from discord import AllowedMentions, Intents
 from discord.ext import commands
 from loguru import logger
 
@@ -17,9 +17,13 @@ CMD_EXTENSIONS = {
 }
 SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 
+DEBUG = config("DEBUG", default=False, cast=bool)
+intents = Intents.default()
+intents.members = True
 bot = UtilityBot(
-    command_prefix=commands.when_mentioned_or("u!"),
+    command_prefix=commands.when_mentioned_or("!!" if DEBUG else "u!"),
     help_command=commands.MinimalHelpCommand(),
+    intents=intents,
     allowed_mentions=AllowedMentions(everyone=False, users=True, replied_user=True),
 )  # TODO: implement helpcommand
 
