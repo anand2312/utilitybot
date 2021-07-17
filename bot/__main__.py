@@ -1,5 +1,6 @@
 from decouple import config
-from discord import AllowedMentions, Intents
+from discord import AllowedMentions
+from discord import Intents
 from discord.ext import commands
 from loguru import logger
 
@@ -14,6 +15,7 @@ CMD_EXTENSIONS = {
     "bot.commands.eval",
     "bot.commands.suggest",
     "bot.commands.issue_linking",
+    "bot.commands.weeb",
 }
 SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 
@@ -32,6 +34,8 @@ for ext in CMD_EXTENSIONS.union(SLASH_EXTENSIONS):
         bot.load_extension(ext)
     except Exception as e:
         logger.error(f"Exception while loading {ext} extension:\n{e}")
+        if DEBUG:
+            raise e
     else:
         logger.info(f"Loaded extension: {ext}")
 

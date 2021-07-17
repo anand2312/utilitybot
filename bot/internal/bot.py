@@ -1,6 +1,7 @@
 """Bot definition."""
-import os
-from typing import Any, Mapping, Type
+from typing import Any
+from typing import Mapping
+from typing import Type
 
 import discord
 from aiohttp import ClientSession
@@ -11,10 +12,11 @@ from discord.ext import commands
 from discord_slash import SlashCommand
 from loguru import logger
 
-from bot.backend.apis import dictionary  # add more clients here as we go
 from bot.backend.apis import crypto
-from bot.internal.context import UtilityContext
+from bot.backend.apis import dictionary  # add more clients here as we go
+from bot.backend.exceptions import ContentNotFoundError
 from bot.backend.models import Guild
+from bot.internal.context import UtilityContext
 
 
 class UtilityBot(commands.Bot):
@@ -89,6 +91,12 @@ class UtilityBot(commands.Bot):
                 f"This command is on cooldown; wait {int(error.retry_after)} seconds 🙂",
                 delete_after=7,
             )
+            return
+        elif isinstance(error, ContentNotFoundError):
+            embed = discord.Embed(
+                title="Nope", description=error.args[0], color=discord.Colour.red()
+            )
+            await ctx.send(embed=embed)
             return
         else:
             raise error
