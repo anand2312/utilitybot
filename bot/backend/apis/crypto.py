@@ -1,5 +1,6 @@
 """Interacting with the crypto API"""
 from typing import Any
+from decouple import config
 
 from loguru import logger
 from discord import Embed
@@ -19,7 +20,7 @@ class CryptoClient(AbstractAPIClient):
         headers = {
             "Accepts": "application/json",
             "Accept-Encoding": "deflate, gzip",
-            "X-CMC_PRO_API_KEY": self.bot.environ.get("COINMARKETCAP_API_KEY"),
+            "X-CMC_PRO_API_KEY": config("COINMARKETCAP_API_KEY"),
         }
         # request data only for the necessary cryptos
         # maintain this as a list on a bot variable

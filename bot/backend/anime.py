@@ -1,6 +1,7 @@
 """Search and recommend anime and manga."""
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
+from bot.backend.exceptions import ContentNotFoundError
 from bot.utils.constants import ContentType
 
 if TYPE_CHECKING:
@@ -32,10 +33,6 @@ query ($search: String) {
   }
 }
 """
-
-
-class ContentNotFoundError(ValueError):
-    """Error raised when a specific query could not be found."""
 
 
 async def get_anime_manga(bot: UtilityBot, *, query: str, _type: ContentType) -> dict:

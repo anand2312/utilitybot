@@ -36,9 +36,7 @@ class Crypto(commands.Cog):
 
         embed = self.api.prepare_output(cached_data["data"][crypto.upper()])
         embed.timestamp = cached_data["last_updated"]
-        embed.set_footer(
-            text="Data last updated", icon_url=self.bot.user.avatar_url
-        )  # type: ignore ; dpy.
+        embed.set_footer(text="Data last updated", icon_url=self.bot.user.avatar_url)
 
         logger.debug(f"Crypto command called by {ctx.author} for crypto {crypto}")
 
