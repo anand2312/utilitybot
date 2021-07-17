@@ -38,9 +38,7 @@ class ContentNotFoundError(ValueError):
     """Error raised when a specific query could not be found."""
 
 
-async def get_anime_manga(
-    bot: UtilityBot, *, query: str, _type: ContentType
-) -> Optional[dict]:
+async def get_anime_manga(bot: UtilityBot, *, query: str, _type: ContentType) -> dict:
     """
     Gets the URL for a specific anime or manga from the Anilist API.
 
@@ -69,7 +67,7 @@ async def get_anime_manga(
             ) from e
 
 
-async def get_character(bot: UtilityBot, *, name: str) -> Optional[dict]:
+async def get_character(bot: UtilityBot, *, name: str) -> dict:
     """
     Gets the URL for a specific character from the Anilist API.
 
