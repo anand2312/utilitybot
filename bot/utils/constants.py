@@ -1,5 +1,15 @@
 """Some constants used in the project."""
+from __future__ import annotations
+
 from enum import Enum
+from typing import TYPE_CHECKING
+
+from discord.ext import commands
+
+from bot.backend.exceptions import BadContentTypeError
+
+if TYPE_CHECKING:
+    from bot.internal.context import UtilityContext
 
 
 class EmbedColour(Enum):
@@ -30,3 +40,9 @@ class ContentType(Enum):
     Anime = "anime"
     Manga = "manga"
     Music = "music"
+
+    async def convert(self, ctx: UtilityContext, arg: str) -> "ContentType":
+        try:
+            return self.__class__(arg.lower())
+        except ValueError:
+            raise BadContentTypeError(f"{arg} is not a valid ContentType")

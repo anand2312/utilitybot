@@ -98,6 +98,14 @@ class UtilityBot(commands.Bot):
             )
             await ctx.send(embed=embed)
             return
+        elif isinstance(error, commands.BadArgument):
+            embed = discord.Embed(
+                title="Error.",
+                description=str(error.__cause__),
+                color=discord.Colour.red(),
+            )
+            await ctx.send(embed=embed)
+            return
         else:
             raise error
 

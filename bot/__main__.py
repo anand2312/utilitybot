@@ -1,3 +1,5 @@
+import importlib
+
 from decouple import config
 from discord import AllowedMentions
 from discord import Intents
@@ -16,6 +18,7 @@ CMD_EXTENSIONS = {
     "bot.commands.suggest",
     "bot.commands.issue_linking",
     "bot.commands.weeb",
+    "bot.commands.recommend",
 }
 SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 
@@ -38,6 +41,14 @@ for ext in CMD_EXTENSIONS.union(SLASH_EXTENSIONS):
             raise e
     else:
         logger.info(f"Loaded extension: {ext}")
+
+
+@bot.command(name="reload-module", aliases=["rm"])
+@commands.is_owner()
+async def reloadm(ctx, name: str) -> None:
+    module = importlib.import_module(name)
+    importlib.reload(module)
+    await ctx.reply(f":white_check_mark: Reloaded {name}")
 
 
 bot.run(config("TOKEN"))
