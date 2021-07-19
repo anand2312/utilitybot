@@ -1,12 +1,14 @@
 """Standard commands for recommending content to other users."""
 from discord import Embed, Member
 from discord.ext import commands
+from loguru import logger
 
 from bot.backend import anime
 from bot.backend import models
 from bot.internal.bot import UtilityBot
 from bot.internal.context import UtilityContext
 from bot.utils.constants import ContentType, EmbedColour
+from bot.utils import pagination
 
 
 class Recommendations(commands.Cog):
@@ -26,11 +28,12 @@ class Recommendations(commands.Cog):
             The embed to be sent as the output.
         """
 
-        return Embed(
+        em = Embed(
             title="Recommended!",
             description=f"Added [{record.name}]({record.url}) to <@{record.user_id}>'s {record.type.value} list.",
-            color=EmbedColour.Success,
+            color=EmbedColour.Success.value,
         )
+        return em  # TODO: add header/footer images with users pfp
 
     @commands.group(name="recommend")
     async def recommend(self, ctx: UtilityContext) -> None:
@@ -42,9 +45,10 @@ class Recommendations(commands.Cog):
         self, ctx: UtilityContext, member: Member, *, name: str
     ) -> None:
         """Recommend an anime to another user."""
-        data = await anime.get_anime_manga(
-            self.bot, query=name, _type=ContentType.Anime
-        )
+        async with ctx.typing():
+            data = await anime.get_anime_manga(
+                self.bot, query=name, _type=ContentType.Anime
+            )
         db_anime = models.ContentRecord(
             user_id=member.id,
             name=data["title"],
@@ -53,7 +57,7 @@ class Recommendations(commands.Cog):
         )
 
         async with self.bot.db_pool.acquire() as conn:
-            await db_anime.save(conn)
+            await ctx.db_user.add_to_list(conn, record=db_anime)
 
         await ctx.reply(embed=self.recommend_output(db_anime))
 
@@ -62,9 +66,11 @@ class Recommendations(commands.Cog):
         self, ctx: UtilityContext, member: Member, *, name: str
     ) -> None:
         """Recommend a manga to another user."""
-        data = await anime.get_anime_manga(
-            self.bot, query=name, _type=ContentType.Manga
-        )
+        async with ctx.typing():
+            data = await anime.get_anime_manga(
+                self.bot, query=name, _type=ContentType.Manga
+            )
+
         db_manga = models.ContentRecord(
             user_id=member.id,
             name=data["title"],
@@ -74,9 +80,36 @@ class Recommendations(commands.Cog):
         )
 
         async with self.bot.db_pool.acquire() as conn:
-            await db_manga.save(conn)
+            await ctx.db_user.add_to_list(conn, record=db_manga)
 
         await ctx.reply(embed=self.recommend_output(db_manga))
+
+    @commands.command(name="recommended", aliases=["list"])
+    async def recommended(self, ctx: UtilityContext, list_type: ContentType) -> None:
+        """Returns all the content that you've been recommended."""
+        async with self.bot.db_pool.acquire() as conn:
+            content = await ctx.db_user.get_content_list(conn, content_type=list_type)
+
+        if len(content) == 0:
+            await ctx.send(
+                embed=Embed(
+                    title=f"{ctx.author.display_name}'s {list_type.value} list",
+                    description="Nothing to see here!",
+                    colour=EmbedColour.Error.value,
+                ).set_footer(text="Maybe add one 👀")
+            )
+            return
+
+        formatted = [
+            f"[{r.name}]({r.url})\n_Recommended by_ <@{r.recommended_by}>"
+            for r in content
+        ]
+        menu = pagination.grouped(
+            formatted,
+            title=f"{ctx.author.display_name}'s {list_type.value} list",
+            group_size=4,
+        )
+        await menu.start(ctx)
 
 
 def setup(bot: UtilityBot) -> None:

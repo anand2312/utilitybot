@@ -1,10 +1,15 @@
 """Some constants used in the project."""
+from __future__ import annotations
+
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from discord.ext import commands
 
 from bot.backend.exceptions import BadContentTypeError
-from bot.internal.context import UtilityContext
+
+if TYPE_CHECKING:
+    from bot.internal.context import UtilityContext
 
 
 class EmbedColour(Enum):
@@ -27,7 +32,7 @@ class VoteEmoji(Enum):
     Cross = "<:cross:849985759750389780>"
 
 
-class ContentType(Enum, commands.Converter):
+class ContentType(Enum):
     """
     Types of content that can be tracked by UtilityBot.
     """

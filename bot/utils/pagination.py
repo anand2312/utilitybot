@@ -38,7 +38,7 @@ def grouped(
     *,
     title: str,
     group_size: int = 3,
-    url: str = None,
+    url: Any = Embed.Empty,
     colour: EmbedColour = EmbedColour.Info,
 ) -> menus.MenuPages:
     """
@@ -69,6 +69,6 @@ def grouped(
     no_of_embeds = len(embeds)
 
     for page, embed in enumerate(embeds):
-        embed.set_footer(text=f"Page {page}/{no_of_embeds}")
+        embed.set_footer(text=f"Page {page + 1}/{no_of_embeds}")
 
     return quick_embed_paginate(embeds)

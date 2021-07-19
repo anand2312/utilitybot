@@ -36,7 +36,7 @@ class ContentRecord:
         """
         logger.debug(f"Retrieving content with name {name} for user {user}")
         r = await conn.fetchrow(
-            "SELECT * FROM user_content WHERE LOWER(name) LIKE $1 AND user_id = $2",
+            "SELECT * FROM user_content WHERE LOWER(content_name) LIKE $1 AND user_id = $2",
             f"%{name.lower()}%",
             user,
         )
@@ -70,7 +70,7 @@ class ContentRecord:
             name=r["content_name"],
             type=ContentType(r["content_type"]),
             recommended_by=r["recommended_by"],
-            url=r["url"],
+            url=r["content_url"],
             id=r["id"],
         )
 
@@ -85,7 +85,11 @@ class ContentRecord:
                 f"Creating new content record for user {self.user_id} with name {self.name}"
             )
             await conn.execute(
-                "INSERT INTO user_content VALUES($1, $2, $3, $4, $5)",
+                (
+                    "INSERT INTO user_content"
+                    "(user_id, content_name, content_type, recommended_by, content_url)"
+                    "VALUES ($1, $2, $3, $4, $5)"
+                ),
                 self.user_id,
                 self.name,
                 self.type.value,
@@ -142,13 +146,14 @@ class User:
         Returns:
             The saved content record object
         """
+        logger.info(f"Adding {record.name} to {self.id}'s {record.type.value} list.")
         return await record.save(conn)
 
     async def remove_from_list(self, conn: asyncpg.Connection, *, name: str) -> None:
         """
         Removes a specific item by it's name from the user's 'list'.
         """
-        logger.info("Deleting content with name {name} for user {self.id}")
+        logger.info(f"Deleting content with name {name} for user {self.id}")
         await ContentRecord(user_id=self.id, name=name).delete(conn)
 
 
