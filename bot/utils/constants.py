@@ -1,6 +1,11 @@
 """Some constants used in the project."""
 from enum import Enum
 
+from discord.ext import commands
+
+from bot.backend.exceptions import BadContentTypeError
+from bot.internal.context import UtilityContext
+
 
 class EmbedColour(Enum):
     """
@@ -22,7 +27,7 @@ class VoteEmoji(Enum):
     Cross = "<:cross:849985759750389780>"
 
 
-class ContentType(Enum):
+class ContentType(Enum, commands.Converter):
     """
     Types of content that can be tracked by UtilityBot.
     """
@@ -30,3 +35,9 @@ class ContentType(Enum):
     Anime = "anime"
     Manga = "manga"
     Music = "music"
+
+    async def convert(self, ctx: UtilityContext, arg: str) -> "ContentType":
+        try:
+            return self.__class__(arg.lower())
+        except ValueError:
+            raise BadContentTypeError(f"{arg} is not a valid ContentType")
