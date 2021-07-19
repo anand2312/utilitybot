@@ -25,7 +25,7 @@ class EvalListener(commands.Cog):
     @property
     def lang_to_extension(self) -> dict:
         return {"python": "py", "rust": "rs", "javascript": "js"}
-  
+
     def prepare_file_output(self, content: str, language: str) -> discord.File:
         """
         Put outputs in File objects that will be rendered by Discord.
@@ -34,7 +34,7 @@ class EvalListener(commands.Cog):
         return discord.File(
             buffer, filename=f"output.{self.lang_to_extension.get(language, 'txt')}"
         )
-    
+
     def prepare_standard_output(self, content: str, language: str) -> str:
         """
         Put outputs in a codeblock. This output method is preferred until
@@ -46,7 +46,7 @@ class EvalListener(commands.Cog):
             f"{content}\n"
             f"```"
         )
-        
+
     async def wait_for_response(
         self, message: discord.Message, emoji: str = "▶"
     ) -> bool:
