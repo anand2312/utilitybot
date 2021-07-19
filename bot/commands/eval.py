@@ -42,7 +42,7 @@ class EvalListener(commands.Cog):
         """
         return (
             f"Ran your **{language}** code\n"
-            f"```{self.lang_to_extension.get(language, 'txt')\n"
+            f"```{self.lang_to_extension.get(language, 'txt')}\n"
             f"{content}\n"
             f"```"
         )
