@@ -22,16 +22,31 @@ class EvalListener(commands.Cog):
             discord.Message, discord.Message
         ] = {}  # dict of code message to bot's reply
 
+    @property
+    def lang_to_extension(self) -> dict:
+        return {"python": "py", "rust": "rs", "javascript": "js"}
+  
     def prepare_file_output(self, content: str, language: str) -> discord.File:
         """
         Put outputs in File objects that will be rendered by Discord.
         """
-        lang_to_extension = {"python": "py", "rust": "rs", "javascript": "js"}
         buffer = StringIO(content)
         return discord.File(
-            buffer, filename=f"output.{lang_to_extension.get(language, 'txt')}"
+            buffer, filename=f"output.{self.lang_to_extension.get(language, 'txt')}"
         )
-
+    
+    def prepare_standard_output(self, content: str, language: str) -> str:
+        """
+        Put outputs in a codeblock. This output method is preferred until
+        Discord finally supports file rendering on mobile as well.
+        """
+        return (
+            f"Ran your **{language}** code\n"
+            f"```{self.lang_to_extension.get(language, 'txt')\n"
+            f"{content}\n"
+            f"```"
+        )
+        
     async def wait_for_response(
         self, message: discord.Message, emoji: str = "▶"
     ) -> bool:
@@ -99,9 +114,10 @@ class EvalListener(commands.Cog):
         output = eval_data["output"].strip().replace("```", "`\u200b``")
         lines = output.splitlines()
 
-        file = self.prepare_file_output(output, language)
-        reply = await ctx.reply(file=file)
-
+        # file = self.prepare_file_output(output, language)  TODO: back to files once discord supports
+        # reply = await ctx.reply(file=file)
+        out = self.prepare_standard_output(output, language)
+        reply = await ctx.reply(out)
         # add message to cache
         self._eval_messages[message] = reply
 
@@ -151,10 +167,11 @@ class EvalListener(commands.Cog):
         output = eval_data["output"].strip().replace("```", "`\u200b``")
         lines = output.splitlines()
 
-        file = self.prepare_file_output(output, language)
-
+        # file = self.prepare_file_output(output, language) TODO: file outputs
+        out = self.prepare_standard_output(output, language)
         await bot_reply.delete()
-        reply = await ctx.reply(file=file)
+        # reply = await ctx.reply(file=file)
+        await ctx.reply(out)
 
     @tasks.loop(minutes=1)
     async def clear_stale_eval_messages(self) -> None:
