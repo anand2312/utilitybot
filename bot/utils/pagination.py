@@ -39,7 +39,7 @@ def grouped(
     title: str,
     group_size: int = 3,
     url: str = None,
-    colour: EmbedColour = EmbedColour.Info
+    colour: EmbedColour = EmbedColour.Info,
 ) -> menus.MenuPages:
     """
     Split a list into groups of `group_size`, and display each group on it's own embed.
@@ -54,9 +54,21 @@ def grouped(
         The MenuPages instance.
     """
 
-    embeds = [
-        Embed(title=title, colour=colour.value, description="\n\n".join(chunk), url=url)
-        for chunk in chunked(items, group_size)
-    ]
+    embeds = []
+
+    for chunk in chunked(items, group_size):
+        embeds.append(
+            Embed(
+                title=title,
+                colour=colour.value,
+                description="\n\n".join(chunk),
+                url=url,
+            )
+        )
+
+    no_of_embeds = len(embeds)
+
+    for page, embed in enumerate(embeds):
+        embed.set_footer(text=f"Page {page}/{no_of_embeds}")
 
     return quick_embed_paginate(embeds)
