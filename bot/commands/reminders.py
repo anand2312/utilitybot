@@ -7,11 +7,11 @@ from loguru import logger
 
 from bot.backend.reminders import Reminder
 from bot.internal.bot import UtilityBot
-from bot.utils.converters import TimeDelta
 from bot.utils.constants import EmbedColour
+from bot.utils.converters import TimeDelta
 
 
-class ReminderCog(commands.Cog):
+class Reminder(commands.Cog):
     """
     Standard commands for setting reminders.
     """
@@ -51,4 +51,4 @@ class ReminderCog(commands.Cog):
 
 
 def setup(bot: UtilityBot) -> None:
-    bot.add_cog(ReminderCog(bot))
+    bot.add_cog(Reminder(bot))

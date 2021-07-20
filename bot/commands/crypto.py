@@ -27,7 +27,7 @@ class Crypto(commands.Cog):
             "BTC", "ETH", "ADA", "XRM", "XLM", "XRP", "NANO", "IOTA", "VET"
         """
 
-        cached_data = self.bot.api_caches.get("crypto")
+        cached_data = self.bot.api_caches["crypto"]
 
         if not cached_data and (len(self.bot.api_caches) != 0):
             raise ValueError(
@@ -35,9 +35,7 @@ class Crypto(commands.Cog):
             )
 
         embed = self.api.prepare_output(cached_data["data"][crypto.upper()])
-
         embed.timestamp = cached_data["last_updated"]
-
         embed.set_footer(text="Data last updated", icon_url=self.bot.user.avatar_url)
 
         logger.debug(f"Crypto command called by {ctx.author} for crypto {crypto}")

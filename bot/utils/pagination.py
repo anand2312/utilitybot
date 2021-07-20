@@ -3,7 +3,12 @@
 Functions and classes to easily handle pagination.
 """
 from typing import Any
+
+from discord import Embed
 from discord.ext import menus
+from more_itertools import chunked
+
+from bot.utils.constants import EmbedColour
 
 
 class ListEmbedSource(menus.ListPageSource):
@@ -26,3 +31,44 @@ def quick_embed_paginate(embeds: list) -> menus.MenuPages:
     """
     source = ListEmbedSource(embeds)
     return menus.MenuPages(source=source, clear_reactions_after=True)
+
+
+def grouped(
+    items: list,
+    *,
+    title: str,
+    group_size: int = 3,
+    url: Any = Embed.Empty,
+    colour: EmbedColour = EmbedColour.Info,
+) -> menus.MenuPages:
+    """
+    Split a list into groups of `group_size`, and display each group on it's own embed.
+
+    Args:
+        items: The list of items to be grouped and paginated.
+        title: The title to be set for the Embeds.
+        group_size: The size of each group to be shown on a single embed.
+        url: Optional URL for the embeds.
+        colour: Optional color for the embeds.
+    Returns:
+        The MenuPages instance.
+    """
+
+    embeds = []
+
+    for chunk in chunked(items, group_size):
+        embeds.append(
+            Embed(
+                title=title,
+                colour=colour.value,
+                description="\n\n".join(chunk),
+                url=url,
+            )
+        )
+
+    no_of_embeds = len(embeds)
+
+    for page, embed in enumerate(embeds):
+        embed.set_footer(text=f"Page {page + 1}/{no_of_embeds}")
+
+    return quick_embed_paginate(embeds)

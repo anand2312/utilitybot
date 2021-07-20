@@ -1,5 +1,7 @@
 # utilitybot
 
+[![Lint](https://github.com/anand2312/utilitybot/actions/workflows/lint.yml/badge.svg)](https://github.com/anand2312/utilitybot/actions/workflows/lint.yml)
+
 Just some commands that I like having.
 
 # Requirements
