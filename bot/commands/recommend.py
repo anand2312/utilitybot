@@ -4,6 +4,7 @@ from discord.ext import commands
 from loguru import logger
 
 from bot.backend import anime
+from bot.backend.apis import music
 from bot.backend import models
 from bot.internal.bot import UtilityBot
 from bot.internal.context import UtilityContext
@@ -83,6 +84,27 @@ class Recommendations(commands.Cog):
             await ctx.db_user.add_to_list(conn, record=db_manga)
 
         await ctx.reply(embed=self.recommend_output(db_manga))
+
+    @recommend.command(name="music")
+    async def recommend_music(
+        self, ctx: UtilityContext, member: Member, *, name: str
+    ) -> None:
+        """Recommend music to another user."""
+        async with ctx.typing():
+            data = await self.bot.music_client.fetch_music_data(name)
+
+        db_music = models.ContentRecord(
+            user_id=member.id,
+            name=name,
+            type=ContentType.Music,
+            recommended_by=ctx.author.id,
+            url=data.external_urls["spotify"],
+        )
+
+        async with self.bot.db_pool.acquire() as conn:
+            await ctx.db_user.add_to_list(conn, record=db_music)
+
+        await ctx.reply(embed=self.recommend_output(db_music))
 
     @commands.command(name="recommended", aliases=["list"])
     async def recommended(self, ctx: UtilityContext, list_type: ContentType) -> None:
