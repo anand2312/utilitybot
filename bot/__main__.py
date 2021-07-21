@@ -19,6 +19,7 @@ CMD_EXTENSIONS = {
     "bot.commands.issue_linking",
     "bot.commands.weeb",
     "bot.commands.recommend",
+    "bot.commands.music",
 }
 SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 

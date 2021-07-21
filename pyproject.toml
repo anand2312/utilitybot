@@ -15,6 +15,7 @@ python-decouple = "^3.4"
 asyncpg = "^0.23.0"
 discord-ext-menus = {git = "https://github.com/rapptz/discord-ext-menus"}
 more-itertools = "^8.8.0"
+tekore = "^3.7.1"
 
 [tool.poetry.dev-dependencies]
 black = "^21.4b2"

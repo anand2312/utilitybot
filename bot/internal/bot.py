@@ -13,7 +13,8 @@ from discord_slash import SlashCommand
 from loguru import logger
 
 from bot.backend.apis import crypto
-from bot.backend.apis import dictionary  # add more clients here as we go
+from bot.backend.apis import dictionary
+from bot.backend.apis import music  # add more clients here as we go
 from bot.backend.exceptions import ContentNotFoundError
 from bot.backend.models import Guild
 from bot.internal.context import UtilityContext
@@ -133,6 +134,7 @@ class UtilityBot(commands.Bot):
         # instantiate more clients here as we go
         self.dictionary_client = dictionary.DictionaryClient(self)
         self.crypto_client = crypto.CryptoClient(self)
+        self.music_client = music.MusicClient()
 
     def start_task_loops(self) -> None:
         if len(self.task_loops) == 0:
