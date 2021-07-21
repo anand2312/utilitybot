@@ -19,12 +19,12 @@ class Music(commands.Cog):
         # Using a wrapper for Spotify API
         self.api = self.bot.music_client
 
-    @commands.command(name="song")
-    async def song(self, ctx: UtilityContext, *, name: str) -> None:
+    @commands.command(name="music")
+    async def music(self, ctx: UtilityContext, *, name: str) -> None:
         """Search the Spotify API (using spotipy) for a specific song."""
 
-        response = await self.api.fetch_song_data(name)
-        await ctx.send(response)
+        response = await self.api.fetch_music_data(name)
+        await ctx.send(response.external_urls["spotify"])
 
 
 def setup(bot: UtilityBot) -> None:

@@ -14,11 +14,11 @@ class MusicClient:
         app_token = tekore.request_client_token(client_id, client_secret)
         self.spotify = tekore.Spotify(app_token, asynchronous=True)
 
-    async def fetch_song_data(self, query: str):
+    async def fetch_music_data(self, query: str):
         """Fetch track/album/artist data in unusable form"""
 
         (tracks,) = await self.spotify.search(
             query, ("track",), limit=1, include_external="audio"
         )
 
-        return tracks.items[0].external_urls["spotify"]
+        return tracks.items[0]
