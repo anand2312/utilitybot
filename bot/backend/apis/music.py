@@ -1,39 +1,24 @@
 """interacting with the music api"""
 
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+import tekore
 
-# for debugging
-import pprint
-
-
-# Only for testing.
-# Will access it from the music command's python file.
-client_id = "bro"
-client_secret = "bro"
-
-# Only for testing.
-# Make from music command's file and pass it to the class in this file
-auth_manager = SpotifyClientCredentials(client_id, client_secret)
-
-# TODO: Make everything async
+from decouple import config
 
 
 class MusicClient:
     """Manage music searches and recommendations"""
 
-    def __init__(self, auth_manager: SpotifyClientCredentials):
-        self.spotify = spotipy.Spotify(auth_manager=auth_manager)
+    def __init__(self):
+        client_id = config("SPOTIFY_CLIENT_ID")
+        client_secret = config("SPOTIFY_CLIENT_SECRET")
+        app_token = tekore.request_client_token(client_id, client_secret)
+        self.spotify = tekore.Spotify(app_token, asynchronous=True)
 
-    def fetch_data(self, query_type: str, query: str, number_of_results: int = 1):
+    async def fetch_song_data(self, query: str):
         """Fetch track/album/artist data in unusable form"""
 
-        data = self.spotify.search(query, number_of_results, type=query_type)
-        pprint.pprint(data["tracks"]["items"][0])
+        (tracks,) = await self.spotify.search(
+            query, ("track",), limit=1, include_external="audio"
+        )
 
-    # def parse_data(self, data):
-
-
-# TODO: Test from the command file from next time
-# a = MusicClient(auth_manager)
-# a.fetch_data("track", "bro", 1)
+        return tracks.items[0].external_urls["spotify"]
