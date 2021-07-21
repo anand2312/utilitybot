@@ -4,7 +4,6 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from discord.ext import commands
 
 from bot.backend.exceptions import BadContentTypeError
 
@@ -20,6 +19,7 @@ class EmbedColour(Enum):
     Error = 0xFF0000
     Info = 0xF4C2C2
     Success = 0x39FF14
+    Warning = 0xFF7900
 
 
 class VoteEmoji(Enum):
