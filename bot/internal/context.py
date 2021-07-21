@@ -1,10 +1,12 @@
+import datetime
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, List, Optional, Union, TYPE_CHECKING
+from typing import AsyncIterator, Optional, Sequence, Union, TYPE_CHECKING
 
 import discord
 from discord.ext import commands
 
 from bot.backend.models import User
+from bot.utils.constants import EmbedColour, VoteEmoji
 
 if TYPE_CHECKING:
     from bot.internal.bot import UtilityBot
@@ -24,9 +26,9 @@ class UtilityContext(commands.Context):
         self,
         *,
         message: Optional[discord.Message] = None,
-        emojis: List[Union[str, discord.Emoji]],
+        emojis: Sequence[Union[str, discord.Emoji]],
         wait: int = 60,
-        prompt: discord.Embed
+        prompt: discord.Embed,
     ) -> AsyncIterator[discord.Reaction]:
         """
         Starts a reaction menu. The context manager will automatically clear reactions.
@@ -71,3 +73,33 @@ class UtilityContext(commands.Context):
                 message.channel, discord.DMChannel
             ):  # clearing reactions in DMs raises Forbidden
                 await message.clear_reactions()
+
+    @asynccontextmanager
+    async def confirmation(
+        self, *, message: Optional[discord.Message] = None, action: str, wait: int = 60
+    ) -> AsyncIterator[bool]:
+        """
+        Starts a confirmation prompt.
+        This adds the check mark/cross mark emojis to the provided `message`, and returns True/False
+        depending on what the user picks.
+
+        Args:
+            message: The message object that will be edited to `prompt`. If None, a new message is sent.
+            action: `Are you sure you want to {action}` is the prompt that is sent.
+            wait: Seconds to wait before clearing reactions.
+        """
+        embed = discord.Embed(
+            title="Confirmation",
+            description=f"Are you sure you want to {action}?",
+            colour=EmbedColour.Warning.value,
+            timestamp=datetime.datetime.utcnow(),
+        )
+
+        embed.set_author(name=self.author.display_name, icon_url=self.author.avatar_url)
+
+        emojis = [VoteEmoji.Check.value, VoteEmoji.Cross.value]
+
+        async with self.reaction_menu(
+            message=message, emojis=emojis, wait=wait, prompt=embed
+        ) as rxn:
+            yield str(rxn.emoji) == VoteEmoji.Check.value
