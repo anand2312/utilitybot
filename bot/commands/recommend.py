@@ -95,7 +95,7 @@ class Recommendations(commands.Cog):
 
         db_music = models.ContentRecord(
             user_id=member.id,
-            name=name,
+            name=data.name,
             type=ContentType.Music,
             recommended_by=ctx.author.id,
             url=data.external_urls["spotify"],
