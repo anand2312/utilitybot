@@ -15,4 +15,6 @@ TOKEN=token
 COINMARKETCAP_API_KEY=key
 DEBUG=true
 DB_URI=postgresql://username:pw@localhost:5432/utilitybot
+SPOTIFY_CLIENT_ID=id
+SPOTIFY_CLIENT_SECRET=secret
 ```

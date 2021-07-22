@@ -6,9 +6,6 @@ from bot.backend.apis import music
 from bot.internal.bot import UtilityBot
 from bot.internal.context import UtilityContext
 
-# For debugging. Remove later
-import pprint
-
 
 class Music(commands.Cog):
     "Standard music commands"
@@ -23,7 +20,7 @@ class Music(commands.Cog):
     async def music(self, ctx: UtilityContext, *, name: str) -> None:
         """Search the Spotify API for a specific song."""
 
-        response = await self.api.fetch_music_data(name)
+        response = await self.api.fetch_track_data(name)
         await ctx.send(response.external_urls["spotify"])
 
 

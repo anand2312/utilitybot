@@ -1,10 +1,8 @@
 """Standard commands for recommending content to other users."""
 from discord import Embed, Member
 from discord.ext import commands
-from loguru import logger
 
 from bot.backend import anime
-from bot.backend.apis import music
 from bot.backend import models
 from bot.internal.bot import UtilityBot
 from bot.internal.context import UtilityContext
@@ -54,7 +52,7 @@ class Recommendations(commands.Cog):
                 name = data["title"]
                 url = data["siteUrl"]
             elif content_type == ContentType.Music:
-                data = await self.bot.music_client.fetch_music_data(name)
+                data = await self.bot.music_client.fetch_track_data(name)
                 name = data.name
                 url = data.external_urls["spotify"]
 
