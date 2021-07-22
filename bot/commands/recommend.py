@@ -1,7 +1,6 @@
 """Standard commands for recommending content to other users."""
 from discord import Embed, Member
 from discord.ext import commands
-from loguru import logger
 
 from bot.backend import anime
 from bot.backend import models
@@ -35,54 +34,40 @@ class Recommendations(commands.Cog):
         )
         return em  # TODO: add header/footer images with users pfp
 
-    @commands.group(name="recommend")
-    async def recommend(self, ctx: UtilityContext) -> None:
-        if ctx.invoked_subcommand is None:
-            await ctx.send_help()
-
-    @recommend.command(name="anime")
-    async def recommend_anime(
-        self, ctx: UtilityContext, member: Member, *, name: str
+    @commands.command(name="recommend")
+    async def recommend(
+        self,
+        ctx: UtilityContext,
+        content_type: ContentType,
+        member: Member,
+        *,
+        name: str,
     ) -> None:
-        """Recommend an anime to another user."""
+        """Recommend content to users"""
         async with ctx.typing():
-            data = await anime.get_anime_manga(
-                self.bot, query=name, _type=ContentType.Anime
-            )
-        db_anime = models.ContentRecord(
-            user_id=member.id,
-            name=data["title"],
-            recommended_by=ctx.author.id,
-            url=data["siteUrl"],
-        )
+            if content_type in [ContentType.Anime, ContentType.Manga]:
+                data = await anime.get_anime_manga(
+                    self.bot, query=name, _type=content_type
+                )
+                name = data["title"]
+                url = data["siteUrl"]
+            elif content_type == ContentType.Music:
+                data = await self.bot.music_client.fetch_track_data(name)
+                name = data.name
+                url = data.external_urls["spotify"]
 
-        async with self.bot.db_pool.acquire() as conn:
-            await ctx.db_user.add_to_list(conn, record=db_anime)
-
-        await ctx.reply(embed=self.recommend_output(db_anime))
-
-    @recommend.command(name="manga")
-    async def recommend_manga(
-        self, ctx: UtilityContext, member: Member, *, name: str
-    ) -> None:
-        """Recommend a manga to another user."""
-        async with ctx.typing():
-            data = await anime.get_anime_manga(
-                self.bot, query=name, _type=ContentType.Manga
+            db = models.ContentRecord(
+                user_id=member.id,
+                name=name,
+                type=content_type,
+                recommended_by=ctx.author.id,
+                url=url,
             )
 
-        db_manga = models.ContentRecord(
-            user_id=member.id,
-            name=data["title"],
-            type=ContentType.Manga,
-            recommended_by=ctx.author.id,
-            url=data["siteUrl"],
-        )
-
         async with self.bot.db_pool.acquire() as conn:
-            await ctx.db_user.add_to_list(conn, record=db_manga)
+            await ctx.db_user.add_to_list(conn, record=db)
 
-        await ctx.reply(embed=self.recommend_output(db_manga))
+        await ctx.reply(embed=self.recommend_output(db))
 
     @commands.command(name="recommended", aliases=["list"])
     async def recommended(self, ctx: UtilityContext, list_type: ContentType) -> None:
