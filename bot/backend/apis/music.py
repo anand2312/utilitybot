@@ -15,7 +15,7 @@ class MusicClient:
         app_token = tekore.request_client_token(client_id, client_secret)
         self.spotify = tekore.Spotify(app_token, asynchronous=True)
 
-    async def fetch_track_data(self, query: str) -> tekore.model.FullTrackPaging:
+    async def fetch_track_data(self, query: str) -> tekore.model.FullTrack:
         """Fetch track data"""
 
         logger.info(f"Searching Spotify for {query} MUSIC")
