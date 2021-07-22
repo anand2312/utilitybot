@@ -1,8 +1,9 @@
 """interacting with the music api"""
 
-import tekore
-from loguru import logger
 from decouple import config
+from loguru import logger
+import tekore
+
 from bot.backend.exceptions import ContentNotFoundError
 
 
@@ -13,7 +14,8 @@ class MusicClient:
         client_id = config("SPOTIFY_CLIENT_ID")
         client_secret = config("SPOTIFY_CLIENT_SECRET")
         app_token = tekore.request_client_token(client_id, client_secret)
-        self.spotify = tekore.Spotify(app_token, asynchronous=True)
+        sender = tekore.CachingSender(max_size=30, sender=tekore.AsyncSender())
+        self.spotify = tekore.Spotify(app_token, sender=sender, asynchronous=True)
 
     async def fetch_track_data(self, query: str) -> tekore.model.FullTrack:
         """Fetch track data"""
@@ -39,10 +41,10 @@ class MusicClient:
                 f"Could not find MUSIC with name {query} \nAPI error: nil; API is working fine"
             )
             raise ContentNotFoundError(f"Could not find MUSIC with name {query}")
-        except:
+        except Exception as error:
             logger.warning(
-                f"Could not find MUSIC with name {query} \nAPI error: Some other error"
+                f"Could not find MUSIC with name {query} \nAPI error: {error}"
             )
             raise ContentNotFoundError(
                 f"Could not find MUSIC with name {query} \nPlease wait for a while before trying again"
-            )
+            ) from error
