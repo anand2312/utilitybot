@@ -1,8 +1,8 @@
 """interacting with the music api"""
 
+import tekore
 from decouple import config
 from loguru import logger
-import tekore
 
 from bot.backend.exceptions import ContentNotFoundError
 
