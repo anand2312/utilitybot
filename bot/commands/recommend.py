@@ -47,15 +47,9 @@ class Recommendations(commands.Cog):
     ) -> None:
         """Recommend content to users"""
         async with ctx.typing():
-            if content_type == ContentType.Anime:
+            if content_type in [ContentType.Anime, ContentType.Manga]:
                 data = await anime.get_anime_manga(
-                    self.bot, query=name, _type=ContentType.Anime
-                )
-                name = data["title"]
-                url = data["siteUrl"]
-            elif content_type == ContentType.Manga:
-                data = await anime.get_anime_manga(
-                    self.bot, query=name, _type=ContentType.Manga
+                    self.bot, query=name, _type=content_type
                 )
                 name = data["title"]
                 url = data["siteUrl"]

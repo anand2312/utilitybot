@@ -21,7 +21,7 @@ class Music(commands.Cog):
 
     @commands.command(name="music")
     async def music(self, ctx: UtilityContext, *, name: str) -> None:
-        """Search the Spotify API (using spotipy) for a specific song."""
+        """Search the Spotify API for a specific song."""
 
         response = await self.api.fetch_music_data(name)
         await ctx.send(response.external_urls["spotify"])
