@@ -1,7 +1,9 @@
 """Argument type converters."""
 import itertools
-from datetime import timedelta
 import re
+from dataclasses import dataclass
+from datetime import timedelta
+from typing import Optional
 
 from discord.ext import commands
 
@@ -10,9 +12,28 @@ FORMATTED_CODE_REGEX = re.compile(
     r"```(?P<lang>[a-z+]+)?\s*" r"(?P<code>.*)" r"\s*" r"```", re.DOTALL | re.IGNORECASE
 )
 
+# from https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
+URL_REGEX = re.compile(
+    r"(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^\s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^\s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^\s]{2,}|www.[a-zA-Z0-9]+.[^\s]{2,})"
+)
+
+
+@dataclass
+class URL:
+
+    link: Optional[str] = None
+
+    async def convert(self, ctx: commands.Context, arg: str) -> "URL":
+        match = URL_REGEX.search(arg)
+
+        if match:
+            return self.__class__(arg)
+        else:
+            raise ValueError("Not a valid URL.")
+
 
 class CodeblockConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, code: str):
+    async def convert(self, ctx: commands.Context, code: str) -> tuple:
         """
         Returns a codeblock from the message.
         """
