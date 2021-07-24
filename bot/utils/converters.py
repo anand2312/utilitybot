@@ -14,7 +14,9 @@ FORMATTED_CODE_REGEX = re.compile(
 
 # from https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
 URL_REGEX = re.compile(
-    r"(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^\s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^\s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^\s]{2,}|www.[a-zA-Z0-9]+.[^\s]{2,})"
+    r"(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]"
+    r".[^\s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^\s]{2,}|"
+    r"https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^\s]{2,}|www.[a-zA-Z0-9]+.[^\s]{2,})"
 )
 
 
@@ -30,9 +32,9 @@ class URL:
             return self.__class__(arg)
         else:
             raise ValueError("Not a valid URL.")
-            
+
     def __str__(self) -> str:
-        return self.link
+        return self.link or "Not resolved"  # to appeace the type checker
 
 
 class CodeblockConverter(commands.Converter):
