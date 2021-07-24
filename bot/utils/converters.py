@@ -30,6 +30,9 @@ class URL:
             return self.__class__(arg)
         else:
             raise ValueError("Not a valid URL.")
+            
+    def __str__(self) -> str:
+        return self.link
 
 
 class CodeblockConverter(commands.Converter):
