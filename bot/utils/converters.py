@@ -21,7 +21,7 @@ URL_REGEX = re.compile(
 
 
 @dataclass
-class URL:
+class URL(commands.Converter):
 
     link: Optional[str] = None
 
@@ -34,7 +34,7 @@ class URL:
             raise ValueError("Not a valid URL.")
 
     def __str__(self) -> str:
-        return self.link or "Not resolved"  # to appeace the type checker
+        return self.link or "Not resolved"  # to appease the type checker
 
 
 class CodeblockConverter(commands.Converter):
