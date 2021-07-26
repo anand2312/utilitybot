@@ -1,6 +1,9 @@
 """Standard commands for recommending content to other users."""
+from typing import Union
+
 from discord import Embed, Member
 from discord.ext import commands
+
 
 from bot.backend import anime
 from bot.backend import models
@@ -8,6 +11,7 @@ from bot.internal.bot import UtilityBot
 from bot.internal.context import UtilityContext
 from bot.utils.constants import ContentType, EmbedColour
 from bot.utils import pagination
+from bot.utils.converters import URL
 
 
 class Recommendations(commands.Cog):
@@ -41,20 +45,25 @@ class Recommendations(commands.Cog):
         content_type: ContentType,
         member: Member,
         *,
-        name: str,
+        name: Union[URL, str],
     ) -> None:
         """Recommend content to users"""
         async with ctx.typing():
-            if content_type in [ContentType.Anime, ContentType.Manga]:
-                data = await anime.get_anime_manga(
-                    self.bot, query=name, _type=content_type
-                )
-                name = data["title"]
-                url = data["siteUrl"]
-            elif content_type == ContentType.Music:
-                data = await self.bot.music_client.fetch_track_data(name)
-                name = data.name
-                url = data.external_urls["spotify"]
+            if isinstance(name, URL):
+                embed = ctx.message.embeds[0]
+                url = str(name)
+                name = embed.title
+            else:
+                if content_type in [ContentType.Anime, ContentType.Manga]:
+                    data = await anime.get_anime_manga(
+                        self.bot, query=name, _type=content_type
+                    )
+                    name = data["title"]
+                    url = data["siteUrl"]
+                elif content_type == ContentType.Music:
+                    data = await self.bot.music_client.fetch_track_data(name)
+                    name = data.name
+                    url = data.external_urls["spotify"]
 
             db = models.ContentRecord(
                 user_id=member.id,
