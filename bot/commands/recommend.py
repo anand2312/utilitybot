@@ -1,7 +1,9 @@
 """Standard commands for recommending content to other users."""
+from typing import Union
+
 from discord import Embed, Member
 from discord.ext import commands
-from typing import Union
+
 
 from bot.backend import anime
 from bot.backend import models
