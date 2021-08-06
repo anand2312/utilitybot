@@ -37,7 +37,7 @@ class Recommendations(commands.Cog):
         else:
             record = records[0]
             out = f"Added [{record.name}]({record.url}) to <@{record.user_id}>'s {record.type.value} list."
-        
+
         em = Embed(
             title="Recommended!",
             description=out,
@@ -75,7 +75,7 @@ class Recommendations(commands.Cog):
             db_records = [
                 models.ContentRecord(
                     user_id=member.id,
-                    name=name,
+                    name=str(name),
                     type=content_type,
                     recommended_by=ctx.author.id,
                     url=url,
