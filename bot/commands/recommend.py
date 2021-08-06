@@ -1,16 +1,15 @@
 """Standard commands for recommending content to other users."""
-from typing import Union
+from typing import List, Union
 
 from discord import Embed, Member
 from discord.ext import commands
-
 
 from bot.backend import anime
 from bot.backend import models
 from bot.internal.bot import UtilityBot
 from bot.internal.context import UtilityContext
-from bot.utils.constants import ContentType, EmbedColour
 from bot.utils import pagination
+from bot.utils.constants import ContentType, EmbedColour
 from bot.utils.converters import URL
 
 
@@ -20,20 +19,28 @@ class Recommendations(commands.Cog):
     def __init__(self, bot: UtilityBot) -> None:
         self.bot = bot
 
-    def recommend_output(self, record: models.ContentRecord) -> Embed:
+    def recommend_output(self, records: List[models.ContentRecord]) -> Embed:
         """
         Prepares the embed output for a `recommend x` command.
 
         Args:
-            record: The ContentRecord object prepared to insert data into the db.
+            records: List of ContentRecord objects, for each user that something was recommended to.
 
         Returns:
             The embed to be sent as the output.
         """
-
+        if len(records) > 1:
+            last_record = records[-1]
+            uptil_last = ", ".join([f"<@{r.user_id}>" for r in records[:-1]])
+            last = f"<@{last_record.user_id}>'s"
+            out = f"Added [{last_record.name}]({last_record.url}) to {uptil_list} and {last} {last_record.type.value} lists."
+        else:
+            record = records[0]
+            out = f"Added [{record.name}]({record.url}) to <@{record.user_id}>'s {record.type.value} list."
+        
         em = Embed(
             title="Recommended!",
-            description=f"Added [{record.name}]({record.url}) to <@{record.user_id}>'s {record.type.value} list.",
+            description=out,
             color=EmbedColour.Success.value,
         )
         return em  # TODO: add header/footer images with users pfp
@@ -43,7 +50,7 @@ class Recommendations(commands.Cog):
         self,
         ctx: UtilityContext,
         content_type: ContentType,
-        member: Member,
+        members: commands.Greedy[Member],
         *,
         name: Union[URL, str],
     ) -> None:
@@ -65,18 +72,23 @@ class Recommendations(commands.Cog):
                     name = data.name
                     url = data.external_urls["spotify"]
 
-            db = models.ContentRecord(
-                user_id=member.id,
-                name=name,
-                type=content_type,
-                recommended_by=ctx.author.id,
-                url=url,
-            )
+            db_records = [
+                models.ContentRecord(
+                    user_id=member.id,
+                    name=name,
+                    type=content_type,
+                    recommended_by=ctx.author.id,
+                    url=url,
+                )
+                for member in members
+            ]
 
         async with self.bot.db_pool.acquire() as conn:
-            await ctx.db_user.add_to_list(conn, record=db)
+            for record in db_records:
+                db_member = models.User(id=record.user_id)
+                await db_member.add_to_list(conn, record=record)
 
-        await ctx.reply(embed=self.recommend_output(db))
+        await ctx.reply(embed=self.recommend_output(db_records))
 
     @commands.command(name="recommended", aliases=["list"])
     async def recommended(self, ctx: UtilityContext, list_type: ContentType) -> None:
