@@ -33,7 +33,7 @@ class Recommendations(commands.Cog):
             last_record = records[-1]
             uptil_last = ", ".join([f"<@{r.user_id}>" for r in records[:-1]])
             last = f"<@{last_record.user_id}>'s"
-            out = f"Added [{last_record.name}]({last_record.url}) to {uptil_list} and {last} {last_record.type.value} lists."
+            out = f"Added [{last_record.name}]({last_record.url}) to {uptil_last} and {last} {last_record.type.value} lists."
         else:
             record = records[0]
             out = f"Added [{record.name}]({record.url}) to <@{record.user_id}>'s {record.type.value} list."
