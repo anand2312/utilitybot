@@ -61,7 +61,7 @@ class UtilityBot(commands.Bot):
         self.task_loops = {}
 
         # create db pool; await on_ready
-        self.db_pool = create_pool(config("DB_URI"))
+        # self.db_pool = create_pool(config("DB_URI"))
 
         self.initialize_api_clients()
 
@@ -75,8 +75,8 @@ class UtilityBot(commands.Bot):
             # start task loops
             self.start_task_loops()
             # actually connect to the db
-            await self.db_pool
-            logger.info("Connected to database")
+            # await self.db_pool
+            # logger.info("Connected to database")
 
         self.manager.start()
         logger.info("Started Scheduler manager")
