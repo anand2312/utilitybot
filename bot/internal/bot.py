@@ -44,7 +44,7 @@ class UtilityBot(commands.Bot):
             "XRM",
             "XLM",
             "XRP",
-            "NANO",
+            "XNO",
             "VET",
             "DOGE",
         ]
