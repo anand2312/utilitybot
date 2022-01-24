@@ -16,6 +16,7 @@ asyncpg = "^0.23.0"
 discord-ext-menus = {git = "https://github.com/rapptz/discord-ext-menus"}
 more-itertools = "^8.8.0"
 tekore = "^3.7.1"
+youtube_dl = "^2021.12.17"
 
 [tool.poetry.dev-dependencies]
 black = "^21.4b2"
