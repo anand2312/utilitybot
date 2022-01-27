@@ -20,7 +20,7 @@ CMD_EXTENSIONS = {
     "bot.commands.weeb",
     "bot.commands.recommend",
     "bot.commands.music",
-    "bot.commands.rolename"
+    "bot.commands.rolename",
 }
 SLASH_EXTENSIONS = {"bot.slash_commands.dictionary", "bot.slash_commands.reminders"}
 
