@@ -79,7 +79,7 @@ class Rolenames(commands.Cog):
             colour=EmbedColour.Success.value,
         )
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     @rn_group.command(name="remove", aliases=["rm"])
     async def rn_remove(self, ctx: UtilityContext, rolename: str) -> None:
@@ -95,7 +95,19 @@ class Rolenames(commands.Cog):
             colour=EmbedColour.Warning.value,
         )
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
+    
+    @rn_group.command(name="list", aliases=["l"])
+    async def rn_list(self, ctx: UtilityContext) -> str:
+        names = await self.get_role_names()
+        embed = Embed(
+            title="List of role names",
+            description="\n".join(
+                [f"• {name}" for name in names]
+            ),
+            colour=EmbedColour.Info.value
+        )
+        await ctx.reply(embed=embed)
 
     @tasks.loop(hours=8)
     async def change_role_name(self) -> None:
