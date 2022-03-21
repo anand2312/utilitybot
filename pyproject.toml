@@ -18,6 +18,7 @@ tekore = "^3.7.1"
 youtube_dl = "^2021.12.17"
 PyNaCl = "^1.5.0"
 "discord.py" = "^1.7.3"
+beautifulsoup4 = "^4.10.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.4b2"
