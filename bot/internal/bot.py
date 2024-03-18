@@ -1,4 +1,5 @@
 """Bot definition."""
+
 from typing import Any
 from typing import Mapping
 from typing import Type

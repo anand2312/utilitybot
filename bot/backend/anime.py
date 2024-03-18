@@ -1,4 +1,5 @@
 """Search and recommend anime and manga."""
+
 from __future__ import annotations
 
 from loguru import logger

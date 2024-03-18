@@ -1,4 +1,5 @@
 """Randomly choose role name"""
+
 import random
 from typing import Dict, List
 
