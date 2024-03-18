@@ -1,4 +1,5 @@
 """Cog to link issues and pull requests from Github."""
+
 import re
 from typing import Tuple
 

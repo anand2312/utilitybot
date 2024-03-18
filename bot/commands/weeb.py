@@ -1,4 +1,5 @@
 """Standard anime and manga commands."""
+
 from discord.ext import commands
 
 from bot.backend import anime
