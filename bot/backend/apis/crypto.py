@@ -1,4 +1,5 @@
 """Interacting with the crypto API"""
+
 from typing import Any
 from decouple import config
 

@@ -2,6 +2,7 @@
 """
 Functions and classes to easily handle pagination.
 """
+
 from typing import Any
 
 from discord import Embed
