@@ -10,7 +10,6 @@ from bot.backend.reminders import Reminder
 from bot.utils.constants import EmbedColour
 from bot.utils.converters import TimeDelta
 
-
 GUILD_IDS = [298871492924669954]
 
 

@@ -1,4 +1,5 @@
 """Standard commands for getting cryptocurrency values."""
+
 from datetime import datetime
 
 from discord.ext import commands, tasks

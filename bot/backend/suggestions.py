@@ -1,4 +1,5 @@
 """Backend for suggestions command."""
+
 import datetime
 
 import discord
