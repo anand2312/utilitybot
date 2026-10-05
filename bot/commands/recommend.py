@@ -1,4 +1,5 @@
 """Standard commands for recommending content to other users."""
+
 from typing import List, Union
 
 from discord import Embed, Member

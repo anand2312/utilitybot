@@ -1,4 +1,5 @@
 """Argument type converters."""
+
 import itertools
 import re
 from dataclasses import dataclass
@@ -6,7 +7,6 @@ from datetime import timedelta
 from typing import Optional
 
 from discord.ext import commands
-
 
 FORMATTED_CODE_REGEX = re.compile(
     r"```(?P<lang>[a-z+]+)?\s*" r"(?P<code>.*)" r"\s*" r"```", re.DOTALL | re.IGNORECASE
