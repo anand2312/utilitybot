@@ -1,4 +1,5 @@
 """Base class definition for the API clients."""
+
 from typing import Any, Optional, Union
 from abc import ABC, abstractmethod
 

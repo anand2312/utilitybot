@@ -1,4 +1,5 @@
 """Interacting with the dictionary API."""
+
 from logging import error
 from typing import List, Optional, Union
 

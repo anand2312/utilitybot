@@ -1,11 +1,11 @@
 """Cog to link issues and pull requests from Github."""
+
 import re
 from typing import Tuple
 
 import discord
 from discord.ext import commands
 from loguru import logger
-
 
 ISSUE_REGEX = re.compile(
     r"((?P<org>[a-zA-Z0-9][a-zA-Z0-9\-]{1,39})\/)?(?P<repo>[\w\-\.]{1,100})#(?P<number>[0-9]+)"
