@@ -1,4 +1,5 @@
 """Some constants used in the project."""
+
 from __future__ import annotations
 
 from enum import Enum

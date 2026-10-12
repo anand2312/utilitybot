@@ -8,7 +8,6 @@ from discord.ext import commands, tasks
 
 from bot.utils.converters import CodeblockConverter
 
-
 PISTON_API_URL = "https://emkc.org/api/v1/piston/execute"
 
 
@@ -18,9 +17,9 @@ class EvalListener(commands.Cog):
 
         # update bot's task loop mapping
         self.bot.task_loops["eval_message_cache"] = self.clear_stale_eval_messages
-        self._eval_messages: Mapping[
-            discord.Message, discord.Message
-        ] = {}  # dict of code message to bot's reply
+        self._eval_messages: Mapping[discord.Message, discord.Message] = (
+            {}
+        )  # dict of code message to bot's reply
 
     @property
     def lang_to_extension(self) -> dict:

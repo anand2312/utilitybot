@@ -1,4 +1,5 @@
 """Handles the database interactions for storing notes."""
+
 from dataclasses import dataclass
 
 

@@ -4,7 +4,6 @@ from discord_slash.utils.manage_commands import create_option
 
 from bot.backend import suggestions as suggest_backend
 
-
 GUILDS = [298871492924669954]
 
 

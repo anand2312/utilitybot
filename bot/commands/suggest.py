@@ -1,4 +1,5 @@
 """Suggestions command"""
+
 from discord.ext import commands
 
 from bot.backend import suggestions as suggest_backend
