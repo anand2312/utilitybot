@@ -8,7 +8,6 @@ from loguru import logger
 
 from bot.internal.bot import UtilityBot
 
-
 CMD_EXTENSIONS = {
     "jishaku",
     "bot.commands.dictionary",

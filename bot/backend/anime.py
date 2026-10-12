@@ -1,4 +1,5 @@
 """Search and recommend anime and manga."""
+
 from __future__ import annotations
 
 from loguru import logger
@@ -6,7 +7,6 @@ from loguru import logger
 from bot.backend.exceptions import ContentNotFoundError
 from bot.internal.bot import UtilityBot
 from bot.utils.constants import ContentType
-
 
 API_URL = "https://graphql.anilist.co"
 _QUERY = """
